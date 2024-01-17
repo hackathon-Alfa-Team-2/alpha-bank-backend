@@ -1,0 +1,4 @@
+Django==4.2.9
+djangorestframework==3.14.0
+environs==10.3.0
+
