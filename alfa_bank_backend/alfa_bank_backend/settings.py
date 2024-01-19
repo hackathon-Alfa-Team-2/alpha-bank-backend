@@ -8,7 +8,9 @@ env.read_env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = "django-insecure-mrkd2u!1=7d%6-y(kn#n4tkxf^t0!36sulqf!tsg35zvtc5r(0"
+SECRET_KEY = (
+    "django-insecure-mrkd2u!1=7d%6-y(kn#n4tkxf^t0!36sulqf!tsg35zvtc5r(0"
+)
 
 DEBUG = env.bool("DEBUG")
 
@@ -93,4 +95,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-REST_FRAMEWORK = {"DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"]}
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+}
