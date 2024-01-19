@@ -8,6 +8,13 @@ repos:
         types: [ python ]
         pass_filenames: false
 
+      - id: isort
+        name: isort
+        entry: isort ./pyproject.toml .
+        language: system
+        types: [ python ]
+        pass_filenames: false
+
       - id: flake8
         name: flake8
         entry: flake8 --config ./.flake8 .

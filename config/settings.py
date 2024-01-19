@@ -24,7 +24,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "src.apps.comments",
     "src.apps.lms",
+    "src.apps.tasks",
     "src.apps.users",
 ]
 
