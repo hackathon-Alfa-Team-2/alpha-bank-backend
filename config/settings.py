@@ -43,7 +43,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "src/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -94,9 +94,21 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+MEDIA_URL = "src/media/"
+MEDIA_ROOT = BASE_DIR / "src/media"
+
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
 }
+
+AUTH_USER_MODEL = "users.CustomUser"
+
+EMPLOYEE_NAME_LENGTH = 64
+USERNAME_LENGTH = 64
+EMAIL_LENGTH = 64
+ROLE_NAME_LENGTH = 64
+GRADE_NAME_LENGTH = 64
+POSITION_NAME_LENGTH = 64
