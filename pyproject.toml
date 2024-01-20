@@ -4,8 +4,3 @@ line-length = 79
 exclude = '''
 		venv/
 '''
-
-[tool.isort]
-known_first_party = ["alfa-bank-backend"]
-known_django = ["django"]
-sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
