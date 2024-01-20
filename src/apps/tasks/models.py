@@ -29,12 +29,13 @@ class Task(models.Model):
     )
     date_added = models.DateField(
         auto_now=True,
+        editable=False,
     )
     lms = models.ForeignKey(
         LMS,
         on_delete=models.CASCADE,
         related_name="tasks",
-        verbose_name="Задача для развития",
+        verbose_name="ИПР.",
     )
 
     def __str__(self):

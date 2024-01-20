@@ -81,13 +81,13 @@ class LMS(models.Model):
     employee = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="employee_lms",
+        related_name="lms",
         verbose_name="Сотрудник.",
     )
     supervisor = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="supervisor_lms",
+        related_name="lms",
         verbose_name="Руководитель.",
     )
 

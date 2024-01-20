@@ -16,17 +16,18 @@ class Comment(models.Model):
     )
     date_added = models.DateField(
         auto_now=True,
+        editable=False,
     )
     task = models.ForeignKey(
         Task,
         on_delete=models.CASCADE,
         related_name="comments",
-        verbose_name="Комментарий к задаче.",
+        verbose_name="Задача.",
     )
     comment_author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="comment_author",
+        related_name="comments",
         verbose_name="Сотрудник оставивший комментарий.",
     )
 
@@ -38,7 +39,7 @@ class Comment(models.Model):
         # чья это задача.
         if (
             self.comment_author != self.task.lms.employee
-            and self.comment_author != self.task.lms.supervisor
+            or self.comment_author != self.task.lms.supervisor
         ):
             raise ValidationError(
                 "Комментарий может оставить только сотрудник или"
