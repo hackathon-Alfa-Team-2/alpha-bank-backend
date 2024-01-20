@@ -5,7 +5,8 @@ from django.db import models
 from django.db.models import CheckConstraint, Q, UniqueConstraint
 
 from config.settings import (
-    DEFAULT_ASSESSMENT,
+    DEFAULT_ASSESSMENT_BEFORE,
+    DEFAULT_ASSESSMENT_AFTER,
     MAX_SKILLS_ASSESSMENT,
     MIN_SKILLS_ASSESSMENT,
     NAME_FIELD_LENGTH,
@@ -14,15 +15,16 @@ from config.settings import (
 User = get_user_model()
 
 
+class Status(models.TextChoices):
+    IN_PROGRESS = "В работе", "in_progress"
+    NOT_DONE = "Не выполнен", "not_done"
+    COMPLETED = "Выполнен", "completed"
+    ABSENT = "Отсутствует", "absent"
+    CANCELED = "Отменен", "canceled"
+
+
 class LMS(models.Model):
     """Индивидуальный план развития."""
-
-    class LMSStatus(models.TextChoices):
-        IN_PROGRESS = "В работе", "in_process"
-        NOT_DONE = "Не выполнен", "not_done"
-        COMPLETED = "Выполнен", "completed"
-        ABSENT = "Отсутствует", "absent"
-        CANCELED = "Отменен", "canceled"
 
     name = models.CharField(
         max_length=NAME_FIELD_LENGTH,
@@ -44,11 +46,11 @@ class LMS(models.Model):
     )
     status = models.CharField(
         verbose_name="Статус ИПР.",
-        choices=LMSStatus.choices,
-        default=LMSStatus.ABSENT,
+        choices=Status.choices,
+        default=Status.ABSENT,
     )
     skill_assessment_before = models.PositiveSmallIntegerField(
-        default=DEFAULT_ASSESSMENT,
+        default=DEFAULT_ASSESSMENT_BEFORE,
         verbose_name="Оценка до.",
         validators=[
             MinValueValidator(
@@ -62,7 +64,7 @@ class LMS(models.Model):
         ],
     )
     skill_assessment_after = models.PositiveSmallIntegerField(
-        default=DEFAULT_ASSESSMENT,
+        default=DEFAULT_ASSESSMENT_AFTER,
         verbose_name="Оценка после.",
         validators=[
             MinValueValidator(
@@ -80,13 +82,13 @@ class LMS(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name="employee_lms",
-        verbose_name="Сотрудник, которому назначен ИПР.",
+        verbose_name="Сотрудник.",
     )
     supervisor = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="supervisor_lms",
-        verbose_name="Руководитель, назначивший ИПР.",
+        verbose_name="Руководитель.",
     )
 
     def __str__(self):
@@ -94,7 +96,7 @@ class LMS(models.Model):
 
     class Meta:
         verbose_name = "ИПР"
-        verbose_name_plural = "ИПРы"
+        verbose_name_plural = "ИПР"
         constraints = [
             UniqueConstraint(
                 fields=["employee", "supervisor"],
@@ -102,7 +104,9 @@ class LMS(models.Model):
             ),
             CheckConstraint(
                 check=~Q(
-                    is_active=True, employee__employee_lms__is_active=True
+                    is_active=True,
+                    employee__employee_lms_is_active=True,
+                    # TODO Проверить в постмане
                 ),
                 name="unique_active_lms_per_employee",
             ),

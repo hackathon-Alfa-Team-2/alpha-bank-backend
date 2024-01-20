@@ -3,18 +3,11 @@ from django.db import models
 from django.db.models import UniqueConstraint
 
 from config.settings import NAME_FIELD_LENGTH
-from src.apps.lms.models import LMS
+from src.apps.lms.models import LMS, Status
 
 
 class Task(models.Model):
     """Задача, привязана к ИПР."""
-
-    class TaskStatus(models.TextChoices):
-        IN_PROGRESS = "В работе", "in_process"
-        NOT_DONE = "Не выполнена", "not_done"
-        COMPLETED = "Выполнена", "completed"
-        ABSENT = "Отсутствует", "absent"
-        CANCELED = "Отменена", "canceled"
 
     name = models.CharField(
         max_length=NAME_FIELD_LENGTH,
@@ -31,8 +24,8 @@ class Task(models.Model):
     )
     status = models.CharField(
         verbose_name="Статус задачи.",
-        choices=TaskStatus.choices,
-        default=TaskStatus.ABSENT,
+        choices=Status.choices,
+        default=Status.ABSENT,
     )
     date_added = models.DateField(
         auto_now=True,
