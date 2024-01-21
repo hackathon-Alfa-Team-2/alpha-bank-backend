@@ -80,7 +80,10 @@ class LMS(models.Model):
             ),
         ],
     )
-    date_added = models.DateField(auto_now=True)
+    date_added = models.DateField(
+        auto_now=True,
+        editable=False,
+    )
     employee = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
@@ -102,7 +105,7 @@ class LMS(models.Model):
         verbose_name_plural = "ИПР"
         constraints = [
             UniqueConstraint(
-                fields=["employee", "supervisor"],
+                fields=["employee", "supervisor", "name"],
                 name="unique_employee_supervisor",
             ),
         ]
