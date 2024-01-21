@@ -148,4 +148,6 @@ class CustomUser(AbstractUser):
 
     @property
     def is_supervisor(self):
-        return self.role.name == "supervisor"
+        if self.role:
+            return self.role.name == "supervisor"
+        return False
