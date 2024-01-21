@@ -24,7 +24,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "src.apps.comments",
     "src.apps.lms",
+    "src.apps.tasks",
     "src.apps.users",
 ]
 
@@ -43,7 +45,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "src/templates"],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -94,15 +96,13 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-MEDIA_URL = "src/media/"
-MEDIA_ROOT = BASE_DIR / "src/media"
-
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
 }
+
 
 AUTH_USER_MODEL = "users.CustomUser"
 
@@ -112,3 +112,11 @@ EMAIL_LENGTH = 64
 ROLE_NAME_LENGTH = 64
 GRADE_NAME_LENGTH = 64
 POSITION_NAME_LENGTH = 64
+
+NAME_FIELD_LENGTH = 256
+MIN_SKILLS_ASSESSMENT = 0
+MAX_SKILLS_ASSESSMENT = 0
+DEFAULT_ASSESSMENT_BEFORE = 0
+DEFAULT_ASSESSMENT_AFTER = 3
+STATUS_FIELD_LENGTH = 16
+TEXT_FIELD_LENGTH = 2048
