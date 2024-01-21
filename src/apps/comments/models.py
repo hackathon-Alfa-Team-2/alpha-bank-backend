@@ -1,7 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
-from src.apps.users.models import CustomUser
 from src.apps.tasks.models import Task
+
+
+CustomUser = get_user_model()
 
 
 class Comment(models.Model):
