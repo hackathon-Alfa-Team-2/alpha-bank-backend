@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import CheckConstraint, Q, UniqueConstraint
+from django.db.models import UniqueConstraint
 
 from src.apps.users.models import CustomUser
 from config.settings import (
@@ -101,14 +101,6 @@ class LMS(models.Model):
             UniqueConstraint(
                 fields=["employee", "supervisor"],
                 name="unique_employee_supervisor",
-            ),
-            CheckConstraint(
-                check=~Q(
-                    is_active=True,
-                    employee__employee_lms_is_active=True,
-                    # TODO Проверить в постмане
-                ),
-                name="unique_active_lms_per_employee",
             ),
         ]
 
