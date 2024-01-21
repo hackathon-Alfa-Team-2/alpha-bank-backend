@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.db import models
 from unidecode import unidecode
 
 from config.settings import (
@@ -145,3 +145,7 @@ class CustomUser(AbstractUser):
         if not self.username:
             self.username = self.generate_username()
         super(CustomUser, self).save(*args, **kwargs)
+
+    @property
+    def is_supervisor(self):
+        return self.role.name == "supervisor"
