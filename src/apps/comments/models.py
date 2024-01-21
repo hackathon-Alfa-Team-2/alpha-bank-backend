@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
 from src.apps.tasks.models import Task
+from config.settings import TEXT_FIELD_LENGTH
 
 
 CustomUser = get_user_model()
@@ -11,6 +12,7 @@ class Comment(models.Model):
     """Комментарий к задаче."""
 
     text_of_comment = models.TextField(
+        max_length=TEXT_FIELD_LENGTH,
         help_text="Добавьте Ваш комментарий.",
         verbose_name="Комментарий.",
         blank=False,
