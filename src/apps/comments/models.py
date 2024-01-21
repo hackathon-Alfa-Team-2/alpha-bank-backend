@@ -1,10 +1,7 @@
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
-
+from src.apps.users.models import CustomUser
 from src.apps.tasks.models import Task
-
-User = get_user_model()
 
 
 class Comment(models.Model):
@@ -13,6 +10,7 @@ class Comment(models.Model):
     text_of_comment = models.TextField(
         help_text="Добавьте Ваш комментарий.",
         verbose_name="Комментарий.",
+        blank=False,
     )
     date_added = models.DateField(
         auto_now=True,
@@ -25,7 +23,7 @@ class Comment(models.Model):
         verbose_name="Задача.",
     )
     comment_author = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.CASCADE,
         related_name="comments",
         verbose_name="Сотрудник оставивший комментарий.",
@@ -33,6 +31,10 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Комментарий {self.comment_author} {self.date_added}"
+
+    class Meta:
+        verbose_name = "Комментарий"
+        verbose_name_plural = "Комментарии."
 
     def clean(self):
         # Проверка: комментарий может оставить только сотрудник,

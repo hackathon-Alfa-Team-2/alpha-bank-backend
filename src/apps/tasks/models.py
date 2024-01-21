@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
 
-from config.settings import NAME_FIELD_LENGTH
+from config.settings import NAME_FIELD_LENGTH, STATUS_FIELD_LENGTH
 from src.apps.lms.models import LMS, Status
 
 
@@ -23,6 +23,7 @@ class Task(models.Model):
         verbose_name="Дата дедлайна.",
     )
     status = models.CharField(
+        max_length=STATUS_FIELD_LENGTH,
         verbose_name="Статус задачи.",
         choices=Status.choices,
         default=Status.ABSENT,

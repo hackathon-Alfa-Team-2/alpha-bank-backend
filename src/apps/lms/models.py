@@ -1,18 +1,17 @@
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import CheckConstraint, Q, UniqueConstraint
 
+from src.apps.users.models import CustomUser
 from config.settings import (
     DEFAULT_ASSESSMENT_BEFORE,
     DEFAULT_ASSESSMENT_AFTER,
     MAX_SKILLS_ASSESSMENT,
     MIN_SKILLS_ASSESSMENT,
     NAME_FIELD_LENGTH,
+    STATUS_FIELD_LENGTH,
 )
-
-User = get_user_model()
 
 
 class Status(models.TextChoices):
@@ -45,6 +44,7 @@ class LMS(models.Model):
         verbose_name="Дата дедлайна.",
     )
     status = models.CharField(
+        max_length=STATUS_FIELD_LENGTH,
         verbose_name="Статус ИПР.",
         choices=Status.choices,
         default=Status.ABSENT,
@@ -79,15 +79,15 @@ class LMS(models.Model):
     )
     date_added = models.DateField(auto_now=True)
     employee = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.CASCADE,
-        related_name="lms",
+        related_name="employee_lms",
         verbose_name="Сотрудник.",
     )
     supervisor = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.CASCADE,
-        related_name="lms",
+        related_name="supervisor_lms",
         verbose_name="Руководитель.",
     )
 
