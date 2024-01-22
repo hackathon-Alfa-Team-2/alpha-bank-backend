@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.db import models
 from unidecode import unidecode
 
 from config.settings import (
@@ -113,10 +113,6 @@ class CustomUser(AbstractUser):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
         constraints = [
-            models.UniqueConstraint(
-                fields=["first_name", "last_name"], name="unique_user"
-            ),
-            models.UniqueConstraint(fields=["email"], name="unique_email"),
             models.CheckConstraint(
                 check=~models.Q(username="me"), name="not_me"
             ),
@@ -145,3 +141,7 @@ class CustomUser(AbstractUser):
         if not self.username:
             self.username = self.generate_username()
         super(CustomUser, self).save(*args, **kwargs)
+
+    @property
+    def is_supervisor(self):
+        return False if not self.role else self.role.name == "supervisor"

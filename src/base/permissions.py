@@ -17,7 +17,7 @@ class TaskLMSBasePermission(permissions.BasePermission):
     def has_permission(self, request: Request, view):
         return (
             request.method in permissions.SAFE_METHODS
-            or request.user.role == "supervisor"
+            or request.user.is_supervisor
             or request.user.is_staff
         )
 
@@ -33,7 +33,7 @@ class IsAdminOrSupervisorReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         return (
             request.method in permissions.SAFE_METHODS
-            and request.user.role == "supervisor"
+            and request.user.is_supervisor
             or request.user.is_staff
         )
 
