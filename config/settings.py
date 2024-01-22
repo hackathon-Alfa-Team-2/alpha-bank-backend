@@ -7,7 +7,6 @@ env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 SECRET_KEY = (
     "django-insecure-mrkd2u!1=7d%6-y(kn#n4tkxf^t0!36sulqf!tsg35zvtc5r(0"
 )
@@ -58,14 +57,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -82,8 +79,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru-RU"
 
 TIME_ZONE = "UTC"
 
@@ -91,12 +87,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 STATIC_URL = "static/"
 
 MEDIA_URL = "src/media/"
 MEDIA_ROOT = BASE_DIR / "src/media"
-
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
