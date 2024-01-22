@@ -113,10 +113,6 @@ class CustomUser(AbstractUser):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
         constraints = [
-            models.UniqueConstraint(
-                fields=["first_name", "last_name"], name="unique_user"
-            ),
-            models.UniqueConstraint(fields=["email"], name="unique_email"),
             models.CheckConstraint(
                 check=~models.Q(username="me"), name="not_me"
             ),
@@ -148,6 +144,4 @@ class CustomUser(AbstractUser):
 
     @property
     def is_supervisor(self):
-        if self.role:
-            return self.role.name == "supervisor"
-        return False
+        return False if not self.role else self.role.name == "supervisor"
