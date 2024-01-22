@@ -24,10 +24,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     "src.apps.comments",
     "src.apps.lms",
     "src.apps.tasks",
     "src.apps.users",
+    "src.apps.api_v1",
 ]
 
 MIDDLEWARE = [
@@ -84,7 +86,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -101,8 +102,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
 }
 
+DJOSER = {
+    "LOGIN_FIELD": "email",
+}
 
 AUTH_USER_MODEL = "users.CustomUser"
 
