@@ -12,6 +12,7 @@ class CustomUserListSerializer(serializers.ModelSerializer):
     """
 
     active_lms = serializers.SerializerMethodField()
+    position = serializers.StringRelatedField()
 
     class Meta:
         model = CustomUser
@@ -24,13 +25,13 @@ class CustomUserListSerializer(serializers.ModelSerializer):
             "active_lms",
             "photo",
         )
-        read_only_fields = "__all__"
+        read_only_fields = ("__all__",)
 
     def get_active_lms(self, obj: CustomUser):
         """
         Получить активный ИПР пользователя.
         """
-        return LMS.objects.filter(employee=obj, is_active=True).last()
+        return LMS.objects.filter(employee=obj, is_active=True).first()
 
 
 class CustomUserRetrieveSerializer(serializers.ModelSerializer):
@@ -38,7 +39,11 @@ class CustomUserRetrieveSerializer(serializers.ModelSerializer):
     Вывод пользователя со всеми принадлежащими ему ИПР.
     """
 
-    lms = ...  # ShortDataLMSSerializer(many=True)
+    position = serializers.StringRelatedField()
+    grade = serializers.StringRelatedField()
+    role = serializers.StringRelatedField()
+
+    # lms = ...  # ShortDataLMSSerializer(many=True)
 
     class Meta:
         model = CustomUser
@@ -51,6 +56,6 @@ class CustomUserRetrieveSerializer(serializers.ModelSerializer):
             "grade",
             "role",
             "photo",
-            "lms",
+            # "lms",
         )
-        read_only_fields = "__all__"
+        read_only_fields = ("__all__",)
