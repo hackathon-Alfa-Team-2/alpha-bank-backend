@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     "src.apps.lms",
     "src.apps.tasks",
     "src.apps.users",
-    "src.apps.api_v1",
 ]
 
 MIDDLEWARE = [
