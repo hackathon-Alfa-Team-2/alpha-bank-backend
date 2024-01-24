@@ -28,9 +28,9 @@ class UserReadOnlyModelViewSet(ReadOnlyModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if self.action in ["retrieve", "list"]:
-            return CustomUser.objects.filter(supervisor=user)
+            return self.queryset.filter(supervisor=user)
         if self.action == "me":
-            return CustomUser.objects.filter(id=user.id)
+            return self.queryset.filter(id=user.id)
 
     def get_serializer_class(self):
         if self.action in ["retrieve", "me"]:
