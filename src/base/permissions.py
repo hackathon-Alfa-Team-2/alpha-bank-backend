@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-
 from rest_framework import permissions
 from rest_framework.request import Request
 
