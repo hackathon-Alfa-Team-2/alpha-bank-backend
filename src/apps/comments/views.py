@@ -10,6 +10,9 @@ class CommentViewSet(ModelViewSet):
 
     serializer_class = CommentSerializer
     permission_classes = (IsAuthenticated,)
+    lookup_field = "task_id"
 
     def get_queryset(self):
-        return Comment.objects.filter(id=self.kwargs.get("pk"))
+        return Comment.objects.select_related("comment_author").filter(
+            task_id=self.kwargs.get("task_id")
+        )

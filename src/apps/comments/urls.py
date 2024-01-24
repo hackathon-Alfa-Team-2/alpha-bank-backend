@@ -8,5 +8,5 @@ comment_router = DefaultRouter()
 comment_router.register(r"comments", CommentViewSet, basename="comments")
 
 urlpatterns = [
-    path("lms/tasks/<int:pk>/", include(comment_router.urls)),
+    path("lms/tasks/<int:task_id>/", include(comment_router.urls)),
 ]
