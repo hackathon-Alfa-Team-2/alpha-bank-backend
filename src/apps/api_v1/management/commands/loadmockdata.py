@@ -1,11 +1,19 @@
 import csv
+import logging
 import sys
 
 from django.core.management.base import BaseCommand
+from django.db.utils import DatabaseError
 
 from src.apps.lms.models import LMS
 from src.apps.tasks.models import Task
 from src.apps.users.models import CustomUser, Role, Grade, Position
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s -- %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -20,12 +28,16 @@ class Command(BaseCommand):
     DATA_PATH = "src/apps/api_v1/management/mock_data/{}.csv"
 
     def handle(self, *args, **options):
-        if self.check_models():
-            for model, file_name in self.MODELS_FILES_NAMES.items():
-                self.load_csv_to_db(model=model, file_name=file_name)
-            print("Данные успешно загружены.")
-        else:
-            sys.exit()
+        try:
+            if self.check_models():
+                logger.info("Starting to upload data.")
+                for model, file_name in self.MODELS_FILES_NAMES.items():
+                    self.load_csv_to_db(model=model, file_name=file_name)
+                logger.info("The data has been uploaded successfully.")
+            else:
+                sys.exit()
+        except DatabaseError as e:
+            logger.error(f'An error has occurred: "{e}"')
 
     @classmethod
     def check_models(cls) -> bool:
@@ -69,3 +81,4 @@ class Command(BaseCommand):
                 row = cls.add_instance(model, row)
                 model.objects.create(**row)
             csvfile.close()
+        logger.info(f"The data has been added to the table {model.__name__}.")
