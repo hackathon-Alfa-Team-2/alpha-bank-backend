@@ -111,6 +111,15 @@ DJOSER = {
 
 AUTH_USER_MODEL = "users.CustomUser"
 
+# Swagger settings
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Basic": {"type": "basic"},
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"},
+    }
+}
+
 EMPLOYEE_NAME_LENGTH = 64
 USERNAME_LENGTH = 64
 EMAIL_LENGTH = 64
