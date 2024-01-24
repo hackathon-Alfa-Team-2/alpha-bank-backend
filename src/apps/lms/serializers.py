@@ -22,7 +22,7 @@ class ShortDataLMSSerializer(serializers.ModelSerializer):
 
 class FullDataLMSSerializer(serializers.ModelSerializer):
     """
-    Сериализатор c именем, датой, статусом ИПР.
+    Сериализатор ИПР со всеми данными включая список задач.
     """
 
     tasks = TaskSerializer(many=True, read_only=True)
@@ -50,10 +50,6 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
         employee = data["employee"]
         if LMS.objects.filter(employee=employee, is_active=True).exists():
             raise ValidationError("У сотрудника уже есть активный ИПР.")
-        # if employee == superviser:
-        #     raise ValidationError(
-        #         "Руководитель не может назначить исполнителем самого себя."
-        #     )
         return data
 
     def create(self, validated_data):
