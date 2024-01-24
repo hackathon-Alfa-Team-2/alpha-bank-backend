@@ -1,5 +1,10 @@
+from typing import TYPE_CHECKING
+
 from rest_framework import permissions
 from rest_framework.request import Request
+
+if TYPE_CHECKING:
+    from src.apps.users.models import CustomUser
 
 
 class TaskLMSBasePermission(permissions.BasePermission):
@@ -32,7 +37,7 @@ class IsAdminOrSupervisorReadOnly(permissions.BasePermission):
             or request.user.is_staff
         )
 
-    def has_object_permission(self, request: Request, view, obj):
+    def has_object_permission(self, request: Request, view, obj: CustomUser):
         return (
             request.method in permissions.SAFE_METHODS
             and obj.supervisor == request.user

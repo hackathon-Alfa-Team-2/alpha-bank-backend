@@ -33,6 +33,7 @@ class Comment(models.Model):
         related_name="comments",
         verbose_name="Сотрудник оставивший комментарий.",
     )
+    flagged = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Комментарий {self.comment_author} {self.date_added}"
