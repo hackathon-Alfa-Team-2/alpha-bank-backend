@@ -1,0 +1,39 @@
+id,name,description,is_active,deadline,status,skill_assessment_before,skill_assessment_after,date_added,employee,supervisor
+1,Basic Plan,Curabitur auctor justo,True,2024-03-08,not_done,2,4,2023-11-18,3,1
+2,Basic Plan,Aliquam erat volutpat,False,2024-09-18,completed,2,5,2023-01-02,4,1
+3,Premium Plan,Donec auctor,False,2024-03-13,in_progress,3,5,2023-10-31,5,2
+4,Basic Plan,Mauris auctor,True,2024-12-07,not_done,1,5,2023-12-29,6,1
+5,Deluxe Plan,Ut nec lectus,True,2024-11-03,canceled,2,5,2023-12-07,7,2
+6,Silver Plan,Donec auctor mauris,True,2024-02-03,in_progress,3,4,2023-01-19,8,2
+7,Starter Plan,Lorem ipsum dolor sit amet,False,2024-11-30,completed,1,5,2023-04-09,9,2
+8,Deluxe Plan,Donec auctor,False,2024-07-30,not_done,1,5,2023-04-12,10,1
+9,Ultimate Plan,Morbi tristique,True,2024-10-06,completed,1,5,2023-05-09,11,2
+10,Pro Plan,Nunc euismod,True,2024-06-23,canceled,3,4,2022-12-12,12,1
+11,Pro Plan,Morbi tristique,True,2024-11-09,canceled,2,4,2023-01-21,13,1
+12,Pro Plan,Nam euismod,False,2024-09-14,canceled,3,5,2023-03-22,14,2
+13,Gold Plan,Phasellus euismod,False,2024-05-04,in_progress,3,5,2023-03-11,15,1
+14,Standard Plan,Pellentesque habitant,True,2024-07-22,completed,3,4,2023-01-27,16,2
+15,Basic Plan,Ut nec lectus,True,2024-04-12,not_done,3,5,2023-06-27,17,1
+16,Gold Plan,Nunc euismod,True,2024-05-03,in_progress,2,4,2023-12-03,18,1
+17,Basic Plan,Fusce nec,False,2025-01-08,not_done,2,4,2023-05-12,19,1
+18,Gold Plan,Vestibulum ante,False,2025-01-07,not_done,2,5,2023-07-29,20,2
+19,Starter Plan,Phasellus euismod velit,True,2024-03-28,not_done,1,4,2023-11-02,21,1
+20,Silver Plan,Praesent id,True,2024-10-02,not_done,2,4,2023-02-01,22,2
+21,Silver Plan,Donec auctor mauris,True,2024-12-17,canceled,2,5,2023-12-13,23,1
+22,Pro Plan,Donec auctor,False,2024-07-19,completed,3,4,2023-07-22,24,1
+23,Starter Plan,Curabitur auctor,False,2024-05-05,completed,3,4,2023-07-07,25,1
+24,Gold Plan,Vivamus euismod sem,True,2024-05-01,canceled,2,4,2023-08-31,26,2
+25,Gold Plan,Quisque nec semper,True,2024-03-23,in_progress,1,4,2023-04-07,27,2
+26,Gold Plan,Vestibulum ante ipsum primis,True,2024-07-11,not_done,2,4,2023-12-25,28,2
+27,Premium Plan,Nam euismod,False,2024-07-31,canceled,1,5,2023-09-06,29,2
+28,Silver Plan,In faucibus orci luctus,False,2024-05-29,in_progress,3,5,2023-07-16,30,2
+29,Pro Plan,Mauris auctor,True,2024-08-22,canceled,3,5,2023-01-12,31,1
+30,Starter Plan,Aliquam erat volutpat,True,2024-06-06,not_done,3,5,2023-11-10,32,2
+31,Gold Plan,Ut nec,True,2024-11-20,in_progress,3,4,2023-11-19,33,1
+32,Silver Plan,Phasellus euismod velit,False,2024-05-17,not_done,1,4,2023-12-03,34,2
+33,Silver Plan,Vestibulum ante ipsum,False,2024-02-18,in_progress,2,4,2023-01-03,35,1
+34,Deluxe Plan,Phasellus euismod,True,2024-03-24,completed,2,5,2023-05-29,36,2
+35,Premium Plan,Cras sed,True,2024-02-28,completed,1,5,2022-12-15,37,2
+36,Pro Plan,Phasellus euismod velit,True,2024-02-22,canceled,2,4,2023-12-13,38,2
+37,Ultimate Plan,Ut nec,False,2024-09-21,completed,2,4,2023-02-09,39,2
+38,Silver Plan,Donec auctor,False,2024-11-20,completed,2,4,2023-03-10,40,2
