@@ -1,6 +1,7 @@
 from rest_framework import permissions
 from rest_framework.request import Request
 
+from src.apps.comments.models import Comment
 from src.apps.users.models import CustomUser
 
 
@@ -74,5 +75,24 @@ class IsAdminOrSupervisorOrTaskExecutor(TaskLMSBasePermission):
             request.method in permissions.SAFE_METHODS
             and request.user == obj.lms.employee
             or request.user == obj.lms.supervisor
+            or request.user.is_staff
+        )
+
+
+class IsAdminOrRelatedToTask(permissions.BasePermission):
+    """
+    Права доступа для взаимодействия с Задачами:
+        - List: Все пользователи
+        - Retrieve: Руководитель и сотрудник связанные с комментарием через
+            задачу и админ
+        - Create: Все пользователи
+        - Update/Delete: Руководитель и Сотрудник связанный с этой задачей и
+            админ
+    """
+
+    def has_object_permission(self, request, view, obj: Comment):
+        return (
+            obj.task.lms.supervisor == request.user
+            or obj.task.lms.employee == request.user
             or request.user.is_staff
         )
