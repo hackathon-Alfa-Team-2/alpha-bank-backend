@@ -20,8 +20,8 @@ class CommentSerializer(ModelSerializer):
         )
 
     def validate(self, attrs):
-        attrs["comment_author"] = self.context["request"].user
-        attrs["task_id"] = self.context["request"].parser_context["kwargs"][
-            "task_id"
-        ]
+        task_id = self.context["request"].parser_context["kwargs"]["task_id"]
+        comment_author = self.context["request"].user
+        attrs["comment_author"] = comment_author
+        attrs["task_id"] = task_id
         return attrs
