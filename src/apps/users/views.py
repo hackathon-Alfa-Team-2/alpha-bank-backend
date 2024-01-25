@@ -17,6 +17,8 @@ CustomUser = get_user_model()
 
 
 class UserReadOnlyModelViewSet(ReadOnlyModelViewSet):
+    """Представление пользователей."""
+
     queryset = CustomUser.objects.all()
     permission_classes = [IsAuthenticated, IsAdminOrSupervisorReadOnly]
     pagination_class = CustomUsersPagination

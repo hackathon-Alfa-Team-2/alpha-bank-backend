@@ -6,7 +6,7 @@ CustomUser = get_user_model()
 
 class CustomUserListSerializer(serializers.ModelSerializer):
     """
-    Вывод списка пользователей с активным ИПР если такой существует.
+    Серилизатор списка пользователей с активным ИПР если такой существует.
     """
 
     # TODO Добавить active_lms поле SerializerMethodField().
@@ -28,7 +28,7 @@ class CustomUserListSerializer(serializers.ModelSerializer):
 
 class CustomUserRetrieveSerializer(serializers.ModelSerializer):
     """
-    Вывод пользователя со всеми принадлежащими ему ИПР.
+    Сериализатор пользователя со всеми принадлежащими ему ИПР.
     """
 
     position = serializers.StringRelatedField()
