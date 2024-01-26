@@ -43,7 +43,7 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
             "employee_id",
             "supervisor",
         )
-        read_only_fields = ("supervisor",)
+        read_only_fields = ("supervisor", "employee_id")
 
     def validate_name(self, name):
         employee_id = self.context["request"].parser_context["kwargs"][
