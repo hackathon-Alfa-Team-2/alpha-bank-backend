@@ -7,9 +7,13 @@ from base.permissions import IsAdminOrSupervisorOrTaskExecutor
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = (
         IsAuthenticated,
         IsAdminOrSupervisorOrTaskExecutor,
     )
+
+    def get_queryset(self):
+        task_id = self.kwargs.get("task_id")
+        queryset = Task.objects.filter(id=task_id)
+        return queryset
