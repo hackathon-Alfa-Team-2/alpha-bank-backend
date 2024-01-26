@@ -24,7 +24,7 @@ class IsAdminOrSupervisorReadOnly(permissions.BasePermission):
             or request.user.is_staff
         )
 
-    def has_object_permission(self, request: Request, view, obj: CustomUser):
+    def has_object_permission(self, request: Request, view, obj):
         return (
             request.method in permissions.SAFE_METHODS
             and obj.supervisor == request.user
@@ -35,24 +35,27 @@ class IsAdminOrSupervisorReadOnly(permissions.BasePermission):
 class IsAdminOrSupervisorOrLMSExecutor(permissions.BasePermission):
     """
     Права доступа для взаимодействия с ИПР:
-        - List: Все пользователи
-        - Retrieve: Руководитель и сотрудник связанные с этим ИПР и админ
-        - Create: Руководитель и админ
-        - Update/Delete: Руководитель связанный с этим ИПР и админ
+        - List/Retrieve/: Админ, руководитель и сотрудник
+            связанные с этим ИПР
+        - Create/Update/Delete: Админ и руководитель связанный с сотрудником.
     """
 
     def has_permission(self, request: Request, view):
+        from_path_user: CustomUser = CustomUser.objects.filter(
+            id=resolve(request.path_info).kwargs["user_id"],
+        ).first()
         return (
             request.method in permissions.SAFE_METHODS
-            or request.user.is_supervisor
+            and request.user == from_path_user
+            or request.user == from_path_user.supervisor
             or request.user.is_staff
         )
 
     def has_object_permission(self, request: Request, view, obj):
         return (
             request.method in permissions.SAFE_METHODS
-            and request.user == obj.employee_id
-            or request.user == obj.supervisor_id
+            and request.user == obj.employee
+            or request.user == obj.supervisor
             or request.user.is_staff
         )
 
