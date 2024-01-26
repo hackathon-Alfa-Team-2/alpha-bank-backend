@@ -23,6 +23,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "django_filters",
+    "drf_yasg",
     "rest_framework.authtoken",
     "src.apps.comments",
     "src.apps.lms",
@@ -110,6 +112,15 @@ DJOSER = {
 }
 
 AUTH_USER_MODEL = "users.CustomUser"
+
+# Swagger settings
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Basic": {"type": "basic"},
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"},
+    }
+}
 
 EMPLOYEE_NAME_LENGTH = 64
 USERNAME_LENGTH = 64
