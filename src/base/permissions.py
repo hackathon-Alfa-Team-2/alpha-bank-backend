@@ -107,7 +107,8 @@ class IsAdminOrRelatedToTask(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj: Comment):
         return (
-            obj.task.lms.supervisor == request.user
-            or obj.task.lms.employee == request.user
+            request.method in permissions.SAFE_METHODS
+            or obj.comment_author == request.user
+            or obj.comment_author == request.user
             or request.user.is_staff
         )
