@@ -1,5 +1,8 @@
+from django.urls import resolve
 from rest_framework import permissions
 from rest_framework.request import Request
+
+from src.apps.users.models import CustomUser
 
 
 class TaskLMSBasePermission(permissions.BasePermission):
@@ -40,7 +43,7 @@ class IsAdminOrSupervisorReadOnly(permissions.BasePermission):
         )
 
 
-class IsAdminOrSupervisorOrLMSExecutor(TaskLMSBasePermission):
+class IsAdminOrSupervisorOrLMSExecutor(permissions.BasePermission):
     """
     Права доступа для взаимодействия с ИПР:
         - List: Все пользователи
@@ -48,6 +51,16 @@ class IsAdminOrSupervisorOrLMSExecutor(TaskLMSBasePermission):
         - Create: Руководитель и админ
         - Update/Delete: Руководитель связанный с этим ИПР и админ
     """
+
+    def has_permission(self, request: Request, view):
+        from_path_user: CustomUser = CustomUser.objects.filter(
+            id=resolve(request.path_info).kwargs["user_id"],
+        ).first()
+        return (
+            request.user == from_path_user
+            or request.user == from_path_user.supervisor
+            or request.user.is_staff
+        )
 
     def has_object_permission(self, request: Request, view, obj):
         return (
