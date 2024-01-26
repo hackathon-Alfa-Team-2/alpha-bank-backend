@@ -30,6 +30,7 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
     class Meta:
         model = LMS
         fields = (
+            "id",
             "name",
             "description",
             "is_active",
@@ -38,25 +39,35 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
             "tasks",
             "skill_assessment_before",
             "skill_assessment_after",
-            "employee",
+            "employee_id",
             "supervisor",
         )
-        read_only_fields = (
-            "is_active",
-            "supervisor",
-        )
+        read_only_fields = ("supervisor",)
 
     def validate(self, data):
-        employee = data["employee"]
-        if LMS.objects.filter(employee=employee, is_active=True).exists():
-            raise ValidationError("У сотрудника уже есть активный ИПР.")
+        employee_id = self.context["request"].parser_context["kwargs"][
+            "user_id"
+        ]
+        supervisor = self.context["request"].user
+        lms_name = data["name"]
+        name_lms_exists = LMS.objects.filter(
+            supervisor_id=supervisor.id,
+            employee_id=employee_id,
+            name=lms_name,
+        ).exists()
+        if name_lms_exists:
+            raise ValidationError(
+                f'У сотрудника уже есть ИПР с именем "{lms_name}"'
+            )
+        data["employee_id"] = employee_id
+        data["supervisor"] = supervisor
         return data
 
     def create(self, validated_data):
-        supervisor = validated_data.get("supervisor")
-        employee = validated_data.get("employee")
-        if supervisor == employee:
-            raise ValidationError(
-                "Руководитель не может назначить исполнителем самого себя."
-            )
+        employee_id = validated_data.get("employee_id")
+        if LMS.objects.filter(
+            employee_id=employee_id,
+            is_active=True,
+        ).exists():
+            raise ValidationError("У сотрудника уже есть активный ИПР.")
         return super().create(validated_data)
