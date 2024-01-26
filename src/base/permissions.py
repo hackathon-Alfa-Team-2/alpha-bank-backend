@@ -24,7 +24,7 @@ class IsAdminOrSupervisorReadOnly(permissions.BasePermission):
             or request.user.is_staff
         )
 
-    def has_object_permission(self, request: Request, view, obj):
+    def has_object_permission(self, request: Request, view, obj: CustomUser):
         return (
             request.method in permissions.SAFE_METHODS
             and obj.supervisor == request.user
@@ -47,7 +47,8 @@ class IsAdminOrSupervisorOrLMSExecutor(permissions.BasePermission):
         return (
             request.method in permissions.SAFE_METHODS
             and request.user == from_path_user
-            or request.user == from_path_user.supervisor
+            or request.user.is_supervisor
+            and request.user == from_path_user.supervisor
             or request.user.is_staff
         )
 
