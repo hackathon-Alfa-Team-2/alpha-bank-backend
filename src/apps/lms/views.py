@@ -12,6 +12,8 @@ class LMSViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        if getattr(self, "swagger_fake_view", False):
+            return LMS.objects.none()
         if user.is_supervisor:
             return LMS.objects.select_related("supervisor").filter(
                 supervisor=user,
