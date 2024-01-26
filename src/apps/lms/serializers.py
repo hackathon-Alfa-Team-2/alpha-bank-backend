@@ -26,6 +26,7 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
     """
 
     tasks = TaskSerializer(many=True, read_only=True)
+    is_active = serializers.BooleanField(default=True)
 
     class Meta:
         model = LMS
@@ -44,30 +45,39 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("supervisor",)
 
+    def validate_name(self, name):
+        employee_id = self.context["request"].parser_context["kwargs"][
+            "user_id"
+        ]
+        supervisor = self.context["request"].user
+        name_lms_exists = LMS.objects.filter(
+            supervisor_id=supervisor.id,
+            employee_id=employee_id,
+            name=name,
+        ).exists()
+        if name_lms_exists:
+            raise ValidationError(
+                f'У сотрудника уже есть ИПР с именем "{name}"'
+            )
+        return name
+
+    def validate_is_active(self, is_active):
+        if is_active:
+            employee_id = self.context["request"].parser_context["kwargs"][
+                "user_id"
+            ]
+            if LMS.objects.filter(
+                employee_id=employee_id,
+                is_active=True,
+            ).exists():
+                raise ValidationError("У сотрудника уже есть активный ИПР.")
+        return is_active
+
     def validate(self, data):
         employee_id = self.context["request"].parser_context["kwargs"][
             "user_id"
         ]
         supervisor = self.context["request"].user
-        lms_name = data["name"]
-        name_lms_exists = LMS.objects.filter(
-            supervisor_id=supervisor.id,
-            employee_id=employee_id,
-            name=lms_name,
-        ).exists()
-        if name_lms_exists:
-            raise ValidationError(
-                f'У сотрудника уже есть ИПР с именем "{lms_name}"'
-            )
         data["employee_id"] = employee_id
         data["supervisor"] = supervisor
         return data
-
-    def create(self, validated_data):
-        employee_id = validated_data.get("employee_id")
-        if LMS.objects.filter(
-            employee_id=employee_id,
-            is_active=True,
-        ).exists():
-            raise ValidationError("У сотрудника уже есть активный ИПР.")
-        return super().create(validated_data)
