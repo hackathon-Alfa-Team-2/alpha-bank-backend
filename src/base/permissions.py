@@ -109,6 +109,5 @@ class IsAdminOrRelatedToTask(permissions.BasePermission):
         return (
             request.method in permissions.SAFE_METHODS
             or obj.comment_author == request.user
-            or obj.comment_author == request.user
             or request.user.is_staff
         )
