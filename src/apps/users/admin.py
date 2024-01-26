@@ -27,7 +27,7 @@ class CustomUserAdmin(UserAdmin):
         (
             "Компетенции",
             {
-                "fields": ("role", "position", "grade"),
+                "fields": ("role", "position", "grade", "supervisor"),
             },
         ),
     )
