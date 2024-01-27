@@ -1,8 +1,6 @@
 from django.db.models import Q
 from django_filters.rest_framework import FilterSet, filters
 
-from src.apps.users.models import CustomUser
-
 
 class CustomUserFilter(FilterSet):
     """
@@ -36,7 +34,3 @@ class CustomUserFilter(FilterSet):
                 employee_lms__is_active=True,
             ),
         )
-
-    class Meta:
-        model = CustomUser
-        fields = ["employee_lms"]
