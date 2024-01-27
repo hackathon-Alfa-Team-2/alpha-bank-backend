@@ -28,7 +28,7 @@ class Task(models.Model):
         choices=Status.choices,
         default=Status.ABSENT,
     )
-    date_added = models.DateField(
+    date_added = models.DateTimeField(
         auto_now=True,
         editable=False,
     )

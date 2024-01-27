@@ -17,7 +17,7 @@ class Comment(models.Model):
         verbose_name="Комментарий.",
         blank=False,
     )
-    date_added = models.DateField(
+    date_added = models.DateTimeField(
         auto_now=True,
         editable=False,
     )
