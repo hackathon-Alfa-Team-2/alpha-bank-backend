@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -6,14 +6,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from src.apps.users.filters import CustomUserFilter
+from src.apps.users.models import CustomUser
 from src.apps.users.paginations import CustomUsersPagination
 from src.apps.users.serializers import (
     CustomUserRetrieveSerializer,
     CustomUserListSerializer,
 )
 from src.base.permissions import IsAdminOrSupervisorReadOnly
-
-CustomUser = get_user_model()
 
 
 class UserReadOnlyModelViewSet(ReadOnlyModelViewSet):
@@ -22,15 +22,14 @@ class UserReadOnlyModelViewSet(ReadOnlyModelViewSet):
     queryset = CustomUser.objects.all()
     permission_classes = [IsAuthenticated, IsAdminOrSupervisorReadOnly]
     pagination_class = CustomUsersPagination
-    filter_backends = [filters.SearchFilter]
-    search_fields = ["first_name", "last_name", "position__name"]
-
-    # TODO фильтрация по статусу и дедлайну
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    search_fields = ["^first_name", "^last_name", "^position__name"]
+    filterset_class = CustomUserFilter
 
     def get_queryset(self):
         user = self.request.user
         if getattr(self, "swagger_fake_view", False):
-            return CustomUser.objects.none()
+            return self.queryset.none()
         if self.action == "me":
             return self.queryset.filter(id=user.id)
         return self.queryset.filter(supervisor=user)

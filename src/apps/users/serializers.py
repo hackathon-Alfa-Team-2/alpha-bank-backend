@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from src.apps.lms.models import LMS
 from src.apps.lms.serializers import ShortDataLMSSerializer
 
 CustomUser = get_user_model()
@@ -25,14 +24,14 @@ class CustomUserListSerializer(serializers.ModelSerializer):
             "position",
             "photo",
             "active_lms",
+            "supervisor",
         )
         read_only_fields = ("__all__",)
 
     def get_active_lms(self, employee):
-        active_lms = LMS.objects.filter(
-            employee=employee, is_active=True
-        ).first()
-        return ShortDataLMSSerializer(active_lms).data
+        return ShortDataLMSSerializer(
+            employee.employee_lms.filter(is_active=True).first()
+        ).data
 
 
 class CustomUserRetrieveSerializer(serializers.ModelSerializer):
@@ -60,5 +59,6 @@ class CustomUserRetrieveSerializer(serializers.ModelSerializer):
             "role",
             "photo",
             "lms",
+            "supervisor",
         )
         read_only_fields = ("__all__",)
