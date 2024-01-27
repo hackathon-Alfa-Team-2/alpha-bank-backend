@@ -6,4 +6,5 @@ urlpatterns = [
     path("", include("src.apps.swagger.routes")),
     path("", include("src.apps.tasks.urls")),
     path("", include("src.apps.comments.urls")),
+    path("", include("src.apps.lms.urls")),
 ]

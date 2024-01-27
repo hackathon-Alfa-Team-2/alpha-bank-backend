@@ -40,7 +40,7 @@ class LMS(models.Model):
     is_active = models.BooleanField(
         blank=False,
         null=False,
-        default=False,
+        default=True,
     )
     deadline = models.DateField(
         help_text="Дата дедлайна не может быть раньше текущей.",
@@ -103,6 +103,7 @@ class LMS(models.Model):
     class Meta:
         verbose_name = "ИПР"
         verbose_name_plural = "ИПР"
+        ordering = ["-date_added"]
         constraints = [
             UniqueConstraint(
                 fields=["employee", "supervisor", "name"],

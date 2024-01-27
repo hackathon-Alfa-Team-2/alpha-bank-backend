@@ -121,6 +121,7 @@ class Migration(migrations.Migration):
             options={
                 "verbose_name": "ИПР",
                 "verbose_name_plural": "ИПР",
+                "ordering": ("-date_added",),
             },
         ),
         migrations.AddConstraint(
