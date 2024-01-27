@@ -4,7 +4,6 @@ from rest_framework import permissions
 from rest_framework.request import Request
 
 from src.apps.comments.models import Comment
-from src.apps.lms.models import LMS
 from src.apps.tasks.models import Task
 from src.apps.users.models import CustomUser
 
@@ -65,14 +64,16 @@ class IsAdminOrSupervisorOrTaskExecutor(permissions.BasePermission):
     """
 
     def has_permission(self, request: Request, view):
-        lms_id = resolve(request.path_info).kwargs["lms_id"]
-        user = request.user
-        lms = LMS.objects.filter(
-            Q(id=lms_id, employee=user) | Q(id=lms_id, supervisor=user)
+        from_path_user: CustomUser = CustomUser.objects.filter(
+            id=resolve(request.path_info).kwargs["user_id"],
+        ).first()
+        return (
+            request.method in permissions.SAFE_METHODS
+            and request.user == from_path_user
+            or request.user.is_supervisor
+            and request.user == from_path_user.supervisor
+            or request.user.is_staff
         )
-        if not lms and not user.is_staff:
-            return False
-        return True
 
     def has_object_permission(self, request: Request, view, obj):
         return (
