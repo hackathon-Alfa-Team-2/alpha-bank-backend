@@ -1,12 +1,9 @@
 from rest_framework import serializers
 
-from tasks.models import Task
+from src.apps.tasks.models import Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source="name")
-    description = serializers.CharField(max_length=512)
-    deadline = serializers.DateField(read_only=True)
     date_added = serializers.DateField(read_only=True)
 
     class Meta:
