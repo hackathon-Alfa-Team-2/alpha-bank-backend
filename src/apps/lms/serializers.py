@@ -13,6 +13,7 @@ class ShortDataLMSSerializer(serializers.ModelSerializer):
     class Meta:
         model = LMS
         fields = (
+            "id",
             "name",
             "deadline",
             "status",

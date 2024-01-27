@@ -1,6 +1,9 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from src.apps.lms.models import LMS
+from src.apps.lms.serializers import ShortDataLMSSerializer
+
 CustomUser = get_user_model()
 
 
@@ -9,8 +12,7 @@ class CustomUserListSerializer(serializers.ModelSerializer):
     Серилизатор списка пользователей с активным ИПР если такой существует.
     """
 
-    # TODO Добавить active_lms поле SerializerMethodField().
-
+    active_lms = serializers.SerializerMethodField()
     position = serializers.StringRelatedField()
 
     class Meta:
@@ -22,8 +24,15 @@ class CustomUserListSerializer(serializers.ModelSerializer):
             "last_name",
             "position",
             "photo",
+            "active_lms",
         )
         read_only_fields = ("__all__",)
+
+    def get_active_lms(self, employee):
+        active_lms = LMS.objects.filter(
+            employee=employee, is_active=True
+        ).first()
+        return ShortDataLMSSerializer(active_lms).data
 
 
 class CustomUserRetrieveSerializer(serializers.ModelSerializer):
@@ -34,8 +43,10 @@ class CustomUserRetrieveSerializer(serializers.ModelSerializer):
     position = serializers.StringRelatedField()
     grade = serializers.StringRelatedField()
     role = serializers.StringRelatedField()
-
-    # TODO Добавить поле lms ShortDataLMSSerializer(many=True)
+    lms = ShortDataLMSSerializer(
+        many=True,
+        source="employee_lms",
+    )
 
     class Meta:
         model = CustomUser
@@ -48,5 +59,6 @@ class CustomUserRetrieveSerializer(serializers.ModelSerializer):
             "grade",
             "role",
             "photo",
+            "lms",
         )
         read_only_fields = ("__all__",)
