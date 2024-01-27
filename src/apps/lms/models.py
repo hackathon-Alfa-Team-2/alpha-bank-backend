@@ -31,11 +31,11 @@ class LMS(models.Model):
     name = models.CharField(
         max_length=NAME_FIELD_LENGTH,
         help_text="Введите название ИПР.",
-        verbose_name="Название ИПР.",
+        verbose_name="Название ИПР",
     )
     description = models.TextField(
         help_text="Введите подробное описание ИПР.",
-        verbose_name="Описание ИПР.",
+        verbose_name="Описание ИПР",
     )
     is_active = models.BooleanField(
         blank=False,
@@ -44,11 +44,11 @@ class LMS(models.Model):
     )
     deadline = models.DateField(
         help_text="Дата дедлайна не может быть раньше текущей.",
-        verbose_name="Дата дедлайна.",
+        verbose_name="Дата дедлайна",
     )
     status = models.CharField(
         max_length=STATUS_FIELD_LENGTH,
-        verbose_name="Статус ИПР.",
+        verbose_name="Статус ИПР",
         choices=Status.choices,
         default=Status.ABSENT,
     )
@@ -83,18 +83,19 @@ class LMS(models.Model):
     date_added = models.DateField(
         auto_now=True,
         editable=False,
+        verbose_name="Дата создания",
     )
     employee = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="employee_lms",
-        verbose_name="Сотрудник.",
+        verbose_name="Сотрудник",
     )
     supervisor = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="supervisor_lms",
-        verbose_name="Руководитель.",
+        verbose_name="Руководитель",
     )
 
     def __str__(self):
