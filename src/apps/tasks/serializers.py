@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -29,3 +30,10 @@ class TaskSerializer(serializers.ModelSerializer):
         lms_id = self.context["request"].parser_context["kwargs"]["lms_id"]
         attrs["lms_id"] = lms_id
         return attrs
+
+    def validate_deadline(self, value):
+        if timezone.now().date() >= value:
+            raise serializers.ValidationError(
+                "Дата дэдлайна не может быть раньше даты создания"
+            )
+        return value
