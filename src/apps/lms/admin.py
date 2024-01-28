@@ -41,6 +41,10 @@ class LMSAdmin(admin.ModelAdmin):
     search_help_text = "Поиск по названию ИПР или фамилии сотрудника."
 
     def save_model(self, request, obj, form, change):
+        """
+        При сохранении проверяем что руководитель
+        является начальником указанного сотрудника.
+        """
         employee = obj.employee
         supervisor = obj.supervisor
         if employee.supervisor != supervisor:

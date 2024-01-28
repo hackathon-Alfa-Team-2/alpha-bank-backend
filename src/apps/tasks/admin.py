@@ -9,7 +9,7 @@ class TaskAdmin(admin.ModelAdmin):
         "id",
         "name",
         "description",
-        "formatted_deadline",
+        "deadline",
         "status",
         "date_added",
         "lms",
@@ -17,10 +17,4 @@ class TaskAdmin(admin.ModelAdmin):
     list_display_links = "id", "name"
     list_editable = ("status",)
     search_fields = "name", "employee__name"
-    search_help_text = "Поиск по названию ИПР или задачи."
-
-    def formatted_deadline(self, obj):
-        # Используем strftime для форматирования даты в строку
-        return obj.deadline.strftime("%Y-%m-%d") if obj.deadline else None
-
-    formatted_deadline.short_description = "Formatted Deadline"
+    search_help_text = "Поиск по названию ИПР или задаче"

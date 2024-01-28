@@ -1,6 +1,5 @@
 from django.db import models
-from django.db.models import UniqueConstraint
-
+from django.db.models import UniqueConstraint, CheckConstraint, Q
 
 from config.settings import NAME_FIELD_LENGTH, STATUS_FIELD_LENGTH
 from src.apps.lms.models import LMS, Status
@@ -47,11 +46,8 @@ class Task(models.Model):
         verbose_name_plural = "Задачи"
         constraints = [
             UniqueConstraint(fields=["name", "lms"], name="unique_name_lms"),
+            CheckConstraint(
+                check=Q(deadline__gte=models.F("date_added")),
+                name="deadline_must_be_after_date_added",
+            ),
         ]
-
-    # def clean(self):
-    #     # Проверка: дата дэдлайна не может быть раньше даты создания.
-    #     if self.deadline and self.deadline <= self.date_added:
-    #         raise ValidationError(
-    #             "Дедлайн не может быть раньше или равен дате создания."
-    #         )

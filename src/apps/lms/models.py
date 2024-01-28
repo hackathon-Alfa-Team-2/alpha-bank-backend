@@ -117,7 +117,8 @@ class LMS(models.Model):
         ]
 
     def clean(self):
-        # Проверка: нельзя поставить оценку ниже предыдущей.
+        """Проверка: нельзя поставить оценку ниже предыдущей."""
+
         if self.skill_assessment_before > self.skill_assessment_after:
             raise ValidationError(
                 "Оценка до не может быть больше, чем оценка после."
