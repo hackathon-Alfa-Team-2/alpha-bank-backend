@@ -86,7 +86,6 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
         data["supervisor"] = supervisor
         return data
 
-
     def validate_deadline(self, value):
         if timezone.now() >= value:
             raise serializers.ValidationError(
