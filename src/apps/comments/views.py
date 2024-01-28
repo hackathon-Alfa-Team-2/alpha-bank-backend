@@ -11,6 +11,7 @@ class CommentViewSet(ModelViewSet):
 
     serializer_class = CommentSerializer
     permission_classes = (IsAuthenticated, IsAdminOrRelatedToTask)
+    swagger_tags = ["Comments"]
 
     def get_queryset(self):
         return Comment.objects.select_related("comment_author").filter(

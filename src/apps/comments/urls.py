@@ -6,7 +6,7 @@ from src.apps.comments.views import CommentViewSet
 comment_router = DefaultRouter()
 
 comment_router.register(
-    r"lms/tasks/(?P<task_id>\d+)/comments",
+    r"users/lms/tasks/(?P<task_id>\d+)/comments",
     CommentViewSet,
     basename="comments",
 )

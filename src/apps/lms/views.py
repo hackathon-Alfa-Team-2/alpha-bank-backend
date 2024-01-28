@@ -9,6 +9,7 @@ from src.base.permissions import IsAdminOrSupervisorOrLMSExecutor
 class LMSViewSet(viewsets.ModelViewSet):
     serializer_class = FullDataLMSSerializer
     permission_classes = [IsAuthenticated, IsAdminOrSupervisorOrLMSExecutor]
+    swagger_tags = ["LMS"]
 
     def get_queryset(self):
         user = self.request.user
