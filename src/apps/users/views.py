@@ -25,6 +25,7 @@ class UserReadOnlyModelViewSet(ReadOnlyModelViewSet):
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ["^first_name", "^last_name", "^position__name"]
     filterset_class = CustomUserFilter
+    swagger_tags = ["Users"]
 
     def get_queryset(self):
         user = self.request.user

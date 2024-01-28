@@ -86,9 +86,18 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
         data["supervisor"] = supervisor
         return data
 
+
     def validate_deadline(self, value):
         if timezone.now() >= value:
             raise serializers.ValidationError(
                 "Дата дэдлайна не может быть раньше даты создания"
             )
         return value
+
+
+class StatisticSerializer(serializers.Serializer):
+    """Сериализатор для статистики ИПР."""
+
+    total_count = serializers.IntegerField()
+    deadlines_this_month = serializers.IntegerField()
+    completed_count = serializers.IntegerField()

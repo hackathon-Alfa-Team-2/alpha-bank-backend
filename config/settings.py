@@ -118,8 +118,9 @@ AUTH_USER_MODEL = "users.CustomUser"
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
         "Basic": {"type": "basic"},
-        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"},
-    }
+        "Token": {"type": "apiKey", "name": "Authorization", "in": "header"},
+    },
+    "DEFAULT_AUTO_SCHEMA_CLASS": "src.apps.swagger.auto_schema_tags.CustomAutoSchema",
 }
 
 EMPLOYEE_NAME_LENGTH = 64

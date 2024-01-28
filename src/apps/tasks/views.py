@@ -8,11 +8,11 @@ from src.base.permissions import IsAdminOrSupervisorOrTaskExecutor
 
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
-
     permission_classes = (
         IsAuthenticated,
         IsAdminOrSupervisorOrTaskExecutor,
     )
+    swagger_tags = ["Tasks"]
 
     def get_queryset(self):
         queryset = Task.objects.select_related("lms").filter(
