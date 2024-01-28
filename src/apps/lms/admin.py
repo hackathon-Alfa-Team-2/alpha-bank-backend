@@ -1,5 +1,6 @@
 from django import forms
-from django.contrib import admin, messages
+from django.contrib import admin
+from django.utils import timezone
 
 from src.apps.lms.models import LMS
 from src.apps.users.models import CustomUser
@@ -18,6 +19,21 @@ class LMSAdminForm(forms.ModelForm):
         self.fields["supervisor"].queryset = CustomUser.objects.filter(
             role__name="supervisor"
         )
+
+    def clean_deadline(self):
+        deadline = self.cleaned_data.get("deadline")
+        if deadline <= timezone.now().date():
+            raise forms.ValidationError("Deadline должен быть в будущем.")
+        return self.cleaned_data["deadline"]
+
+    def clean_employee(self):
+        employee = self.cleaned_data.get("employee")
+        supervisor = self.cleaned_data.get("supervisor")
+        if employee.supervisor != supervisor:
+            raise forms.ValidationError(
+                "Сотрудник должен быть подчинен указанному руководителю."
+            )
+        return self.cleaned_data["employee"]
 
 
 @admin.register(LMS)
@@ -39,20 +55,3 @@ class LMSAdmin(admin.ModelAdmin):
     list_editable = "status", "is_active", "deadline"
     search_fields = "name", "employee__last_name"
     search_help_text = "Поиск по названию ИПР или фамилии сотрудника."
-
-    def save_model(self, request, obj, form, change):
-        """
-        При сохранении проверяем что руководитель
-        является начальником указанного сотрудника.
-        """
-        employee = obj.employee
-        supervisor = obj.supervisor
-        if employee.supervisor != supervisor:
-            messages.error(
-                request,
-                f"ИПР {obj.name} не создан. "
-                f"Сотрудник должен быть подчинен указанному руководителю.",
-            )
-
-        else:
-            super().save_model(request, obj, form, change)
