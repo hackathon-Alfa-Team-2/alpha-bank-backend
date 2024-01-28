@@ -82,3 +82,11 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
         data["employee_id"] = employee_id
         data["supervisor"] = supervisor
         return data
+
+
+class StatisticSerializer(serializers.Serializer):
+    """Сериализатор для статистики ИПР."""
+
+    total_count = serializers.IntegerField()
+    deadlines_this_month = serializers.IntegerField()
+    completed_count = serializers.IntegerField()
