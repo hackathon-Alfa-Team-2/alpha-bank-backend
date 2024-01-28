@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import UniqueConstraint
+from django.db.models import UniqueConstraint, CheckConstraint, Q
 from django.contrib.auth import get_user_model
 
 from config.settings import (
@@ -109,6 +109,10 @@ class LMS(models.Model):
             UniqueConstraint(
                 fields=["employee", "supervisor", "name"],
                 name="unique_employee_supervisor",
+            ),
+            CheckConstraint(
+                check=Q(deadline__gte=models.F("date_added")),
+                name="deadline_not_earlier_than_date_added",
             ),
         ]
 

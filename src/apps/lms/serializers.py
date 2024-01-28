@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from django.utils import timezone
 
 from src.apps.lms.models import LMS
 from src.apps.tasks.serializers import TaskSerializer
@@ -27,6 +28,7 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
 
     tasks = TaskSerializer(many=True, read_only=True)
     is_active = serializers.BooleanField(default=True)
+    deadline = serializers.DateTimeField()
 
     class Meta:
         model = LMS
@@ -79,5 +81,13 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
         ]
         supervisor = self.context["request"].user
         data["employee_id"] = employee_id
+
         data["supervisor"] = supervisor
         return data
+
+    def validate_deadline(self, value):
+        if timezone.now() >= value:
+            raise serializers.ValidationError(
+                "Дата дэдлайна не может быть раньше даты создания"
+            )
+        return value
