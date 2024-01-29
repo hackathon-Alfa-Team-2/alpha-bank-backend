@@ -1,6 +1,6 @@
 from django.db.models import Count, Case, When
 from rest_framework import viewsets, status
-from rest_framework.decorators import action
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -30,13 +30,13 @@ class LMSViewSet(viewsets.ModelViewSet):
             )
         return LMS.objects.all()
 
-    @action(
-        url_name="statistic",
-        detail=False,
-        methods=["get"],
-        permission_classes=[IsAuthenticated],
-    )
-    def statistic(self, request, *args, **kwargs):
+
+class LMSStatisticApiView(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = StatisticSerializer
+    swagger_tags = ["LMS"]
+
+    def get(self, request, *args, **kwargs):
         month_start, month_end = get_current_month_range()
         stats_data = LMS.objects.aggregate(
             total_count=Count("id"),
@@ -51,6 +51,6 @@ class LMSViewSet(viewsets.ModelViewSet):
             ),
             completed_count=Count(Case(When(status="completed", then=1))),
         )
-        serializer = StatisticSerializer(data=stats_data)
+        serializer = self.serializer_class(data=stats_data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
