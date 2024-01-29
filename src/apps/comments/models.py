@@ -40,7 +40,7 @@ class Comment(models.Model):
 
     class Meta:
         verbose_name = "Комментарий"
-        verbose_name_plural = "Комментарии."
+        verbose_name_plural = "Комментарии"
 
     def save(self, *args, **kwargs):
         # Проверка: комментарий может оставить только сотрудник,
