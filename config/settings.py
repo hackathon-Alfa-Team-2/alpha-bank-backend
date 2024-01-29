@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "corsheaders",
     "django_filters",
     "drf_yasg",
     "rest_framework.authtoken",
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -137,3 +139,6 @@ DEFAULT_ASSESSMENT_BEFORE = 0
 DEFAULT_ASSESSMENT_AFTER = 3
 STATUS_FIELD_LENGTH = 16
 TEXT_FIELD_LENGTH = 2048
+
+# corsheaders
+CORS_ALLOW_ALL_ORIGINS = True
