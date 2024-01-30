@@ -1,5 +1,7 @@
 from django.urls import path, include
 
+app_name = "api_v1"
+
 urlpatterns = [
     path("auth/", include("djoser.urls.authtoken")),
     path("", include("src.apps.swagger.routes")),

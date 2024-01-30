@@ -4,7 +4,8 @@ max-line-length = 79
 
 ignore =
 	W503,
-	F811
+	F811,
+	F523
 
 exclude =
 	tests/,
