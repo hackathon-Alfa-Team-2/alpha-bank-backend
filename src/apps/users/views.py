@@ -45,6 +45,9 @@ class UserReadOnlyModelViewSet(ReadOnlyModelViewSet):
         detail=False,
         methods=["get"],
         permission_classes=[IsAuthenticated],
+        pagination_class=None,
+        filterset_class=None,
+        filter_backends=None,
     )
     def me(self, request: Request):
         user = self.get_queryset().first()
