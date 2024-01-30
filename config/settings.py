@@ -11,7 +11,7 @@ SECRET_KEY = (
     "django-insecure-mrkd2u!1=7d%6-y(kn#n4tkxf^t0!36sulqf!tsg35zvtc5r(0"
 )
 
-DEBUG = env.bool("DEBUG")
+DEBUG = False
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
@@ -67,8 +67,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": env.str("DB_ENGINE"),
+        "NAME": env.str("DB_NAME"),
+        "USER": env.str("DB_USER"),
+        "PASSWORD": env.str("DB_PASSWORD"),
+        "HOST": env.str("DB_HOST"),
+        "PORT": env.int("DB_PORT"),
     }
 }
 
@@ -96,9 +100,10 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static"
 
-MEDIA_URL = "src/media/"
-MEDIA_ROOT = BASE_DIR / "src/media"
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -142,3 +147,8 @@ TEXT_FIELD_LENGTH = 2048
 
 # corsheaders
 CORS_ALLOW_ALL_ORIGINS = True
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
