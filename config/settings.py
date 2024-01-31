@@ -11,7 +11,7 @@ SECRET_KEY = (
     "django-insecure-mrkd2u!1=7d%6-y(kn#n4tkxf^t0!36sulqf!tsg35zvtc5r(0"
 )
 
-DEBUG = env.bool("DEBUG")
+DEBUG = False
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "corsheaders",
     "django_filters",
     "drf_yasg",
     "rest_framework.authtoken",
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -65,8 +67,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": env.str("DB_ENGINE"),
+        "NAME": env.str("DB_NAME"),
+        "USER": env.str("DB_USER"),
+        "PASSWORD": env.str("DB_PASSWORD"),
+        "HOST": env.str("DB_HOST"),
+        "PORT": env.int("DB_PORT"),
     }
 }
 
@@ -94,9 +100,10 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static"
 
-MEDIA_URL = "src/media/"
-MEDIA_ROOT = BASE_DIR / "src/media"
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -132,8 +139,16 @@ POSITION_NAME_LENGTH = 64
 
 NAME_FIELD_LENGTH = 256
 MIN_SKILLS_ASSESSMENT = 0
-MAX_SKILLS_ASSESSMENT = 0
+MAX_SKILLS_ASSESSMENT = 5
 DEFAULT_ASSESSMENT_BEFORE = 0
 DEFAULT_ASSESSMENT_AFTER = 3
 STATUS_FIELD_LENGTH = 16
 TEXT_FIELD_LENGTH = 2048
+
+# corsheaders
+CORS_ALLOW_ALL_ORIGINS = True
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass

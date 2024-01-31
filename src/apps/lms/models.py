@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import UniqueConstraint
+from django.db.models import UniqueConstraint, CheckConstraint, Q
 from django.contrib.auth import get_user_model
 
 from config.settings import (
@@ -31,11 +31,11 @@ class LMS(models.Model):
     name = models.CharField(
         max_length=NAME_FIELD_LENGTH,
         help_text="Введите название ИПР.",
-        verbose_name="Название ИПР.",
+        verbose_name="Название ИПР",
     )
     description = models.TextField(
         help_text="Введите подробное описание ИПР.",
-        verbose_name="Описание ИПР.",
+        verbose_name="Описание ИПР",
     )
     is_active = models.BooleanField(
         blank=False,
@@ -44,11 +44,11 @@ class LMS(models.Model):
     )
     deadline = models.DateField(
         help_text="Дата дедлайна не может быть раньше текущей.",
-        verbose_name="Дата дедлайна.",
+        verbose_name="Дата дедлайна",
     )
     status = models.CharField(
         max_length=STATUS_FIELD_LENGTH,
-        verbose_name="Статус ИПР.",
+        verbose_name="Статус ИПР",
         choices=Status.choices,
         default=Status.ABSENT,
     )
@@ -83,18 +83,19 @@ class LMS(models.Model):
     date_added = models.DateField(
         auto_now=True,
         editable=False,
+        verbose_name="Дата создания",
     )
     employee = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="employee_lms",
-        verbose_name="Сотрудник.",
+        verbose_name="Сотрудник",
     )
     supervisor = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="supervisor_lms",
-        verbose_name="Руководитель.",
+        verbose_name="Руководитель",
     )
 
     def __str__(self):
@@ -109,10 +110,15 @@ class LMS(models.Model):
                 fields=["employee", "supervisor", "name"],
                 name="unique_employee_supervisor",
             ),
+            CheckConstraint(
+                check=Q(deadline__gte=models.F("date_added")),
+                name="deadline_not_earlier_than_date_added",
+            ),
         ]
 
     def clean(self):
-        # Проверка: нельзя поставить оценку ниже предыдущей.
+        """Проверка: нельзя поставить оценку ниже предыдущей."""
+
         if self.skill_assessment_before > self.skill_assessment_after:
             raise ValidationError(
                 "Оценка до не может быть больше, чем оценка после."

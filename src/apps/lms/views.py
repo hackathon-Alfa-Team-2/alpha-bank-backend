@@ -1,9 +1,13 @@
-from rest_framework import viewsets
+from django.db.models import Count, Case, When
+from rest_framework import viewsets, status
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from src.apps.lms.models import LMS
-from src.apps.lms.serializers import FullDataLMSSerializer
+from src.apps.lms.serializers import FullDataLMSSerializer, StatisticSerializer
 from src.base.permissions import IsAdminOrSupervisorOrLMSExecutor
+from src.base.utils import get_current_month_range
 
 
 class LMSViewSet(viewsets.ModelViewSet):
@@ -25,3 +29,28 @@ class LMSViewSet(viewsets.ModelViewSet):
                 employee=user,
             )
         return LMS.objects.all()
+
+
+class LMSStatisticApiView(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = StatisticSerializer
+    swagger_tags = ["LMS"]
+
+    def get(self, request, *args, **kwargs):
+        month_start, month_end = get_current_month_range()
+        stats_data = LMS.objects.aggregate(
+            total_count=Count("id"),
+            deadlines_this_month=Count(
+                Case(
+                    When(
+                        deadline__gte=month_start,
+                        deadline__lte=month_end,
+                        then=1,
+                    )
+                )
+            ),
+            completed_count=Count(Case(When(status="completed", then=1))),
+        )
+        serializer = self.serializer_class(data=stats_data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -56,29 +56,14 @@ class Command(BaseCommand):
         return True
 
     @classmethod
-    def add_instance(cls, model, row: dict) -> dict:
-        if model is CustomUser:
-            supervisor_id = row.pop("supervisor")
-            if supervisor_id:
-                row["supervisor"] = CustomUser.objects.get(id=supervisor_id)
-            row["role"] = Role.objects.get(id=row.pop("role"))
-            row["position"] = Position.objects.get(id=row.pop("position"))
-            row["grade"] = Grade.objects.get(id=row.pop("grade"))
-        elif model is LMS:
-            row["employee"] = CustomUser.objects.get(id=row.pop("employee"))
-            row["supervisor"] = CustomUser.objects.get(
-                id=row.pop("supervisor")
-            )
-        elif model is Task:
-            row["lms"] = LMS.objects.get(id=row.pop("lms"))
-        return row
-
-    @classmethod
     def load_csv_to_db(cls, model, file_name):
         with open(cls.DATA_PATH.format(file_name)) as csvfile:
             dict_reader = csv.DictReader(csvfile, delimiter=",")
             for row in dict_reader:
-                row = cls.add_instance(model, row)
-                model.objects.create(**row)
+                if model == CustomUser:
+                    row["username"] = CustomUser(**row).generate_username()
+                    CustomUser.objects.create_user(**row)
+                else:
+                    model.objects.create(**row)
             csvfile.close()
         logger.info(f"The data has been added to the table {model.__name__}.")

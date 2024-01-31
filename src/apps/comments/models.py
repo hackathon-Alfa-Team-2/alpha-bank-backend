@@ -13,11 +13,11 @@ class Comment(models.Model):
 
     text_of_comment = models.TextField(
         max_length=TEXT_FIELD_LENGTH,
-        help_text="Добавьте Ваш комментарий.",
-        verbose_name="Комментарий.",
+        help_text="Добавьте Ваш комментарий",
+        verbose_name="Комментарий",
         blank=False,
     )
-    date_added = models.DateField(
+    date_added = models.DateTimeField(
         auto_now=True,
         editable=False,
     )
@@ -25,13 +25,13 @@ class Comment(models.Model):
         Task,
         on_delete=models.CASCADE,
         related_name="comments",
-        verbose_name="Задача.",
+        verbose_name="Задача",
     )
     comment_author = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="comments",
-        verbose_name="Сотрудник оставивший комментарий.",
+        verbose_name="Сотрудник оставивший комментарий",
     )
     flagged = models.BooleanField(default=False)
 
@@ -40,27 +40,18 @@ class Comment(models.Model):
 
     class Meta:
         verbose_name = "Комментарий"
-        verbose_name_plural = "Комментарии."
+        verbose_name_plural = "Комментарии"
 
-    def clean(self):
+    def save(self, *args, **kwargs):
         # Проверка: комментарий может оставить только сотрудник,
         # чья это задача.
         if (
             self.comment_author != self.task.lms.employee
-            or self.comment_author != self.task.lms.supervisor
+            and self.comment_author != self.task.lms.supervisor
         ):
             raise ValidationError(
                 "Комментарий может оставить только сотрудник или"
                 " его руководитель."
             )
-
-        # Проверка: руководитель может оставлять комментарии
-        # только к своим задачам.
-        if (
-            self.comment_author == self.task.lms.supervisor
-            and self.comment_author != self.task.lms.employee
-        ):
-            raise ValidationError(
-                "Руководитель может оставлять комментарии только"
-                " к своим задачам."
-            )
+        else:
+            super().save(*args, **kwargs)
