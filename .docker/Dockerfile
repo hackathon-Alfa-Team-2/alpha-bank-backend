@@ -2,7 +2,8 @@ FROM python:3.10-slim
 
 WORKDIR /app-backend
 
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONUNBUFFERED=1 \
+		PYTHONDOWNTWRITEBYTECODE=1
 
 RUN apt-get update && \
     apt-get clean
