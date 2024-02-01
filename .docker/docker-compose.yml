@@ -14,17 +14,18 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    image: prstud/alpha-backend:latest
+    image: andreydogadkin/alpha-backend:latest
     restart: always
-    volumes:
-      - static_alpha:/collected_static/
-      - media_alpha:/backend/media/
     env_file:
       - ../config/.env
-    command:
-      - bash
-      - -c
-      - "gunicorn --bind 0.0.0.0:8000 config.wsgi"
+    volumes:
+      - static_alpha:/backend_static/
+      - media_alpha:/backend/media/
+    command: bash -c "
+      python manage.py collectstatic
+      && cp -r /app-backend/static/. /backend_static/static/
+      && gunicorn --bind 0.0.0.0:8000 config.wsgi
+      "
 
   nginx:
     image: nginx:1.25.0
@@ -32,7 +33,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - static_alpha:/var/html/static/
-      - media_alpha:/var/html/media/
+      - static_alpha:/staticfiles/
+      - media_alpha:/media/
     depends_on:
       - backend

@@ -2,7 +2,7 @@
 venv
 .git
 db.sqlite3 
-.env
+config/.env
 .idea
 .vscode
-.local_settings.py
+*/local_settings.py
