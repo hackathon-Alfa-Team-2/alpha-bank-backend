@@ -40,3 +40,12 @@ class LMSAPITestCase(APITestCase):
             f"/api/v1/users/{self.employee.id}/lms/", self.data, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_lms_as_employee(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.supervisor_token.key
+        )
+        response = self.client.post(
+            f"/api/v1/users/{self.employee.id}/lms/", self.data, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
