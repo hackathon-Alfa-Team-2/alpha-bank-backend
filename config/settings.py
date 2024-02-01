@@ -7,13 +7,13 @@ env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = (
-    "django-insecure-mrkd2u!1=7d%6-y(kn#n4tkxf^t0!36sulqf!tsg35zvtc5r(0"
-)
+SECRET_KEY = env.str("DJANGO_SECRET_KEY")
 
 DEBUG = False
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
