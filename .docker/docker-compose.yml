@@ -3,6 +3,7 @@ version: '3.3'
 volumes:
   static_alpha:
   media_alpha:
+  gunicorn_log:
   pg_data:
 
 services:
@@ -20,12 +21,16 @@ services:
       - ../config/.env
     volumes:
       - static_alpha:/backend_static/
-      - media_alpha:/backend/media/
+      - media_alpha:/backend_media/
+      - gunicorn_log:/logs/
     command: bash -c "
       python manage.py collectstatic
       && cp -r /app-backend/static/. /backend_static/static/
-      && gunicorn --bind 0.0.0.0:8000 config.wsgi
+      && python manage.py migrate
+      && gunicorn --bind 0.0.0.0:8000 config.wsgi --error-logfile /logs/logs.txt
       "
+    depends_on:
+      - db
 
   nginx:
     image: nginx:1.25.0
