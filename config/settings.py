@@ -122,6 +122,8 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 # Swagger settings
 
+BASE_REQUEST_URL = env.str("BASE_REQUEST_URL")
+
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
         "Basic": {"type": "basic"},
