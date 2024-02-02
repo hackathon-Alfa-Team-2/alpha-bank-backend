@@ -2,6 +2,7 @@
 
   on:
     pull_request:
+      branches: ["develop"]
       types:
         - closed
 
@@ -10,7 +11,7 @@
       name: Push Docker image to Docker Hub
       runs-on: ubuntu-latest
       needs: tests
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/develop'
       steps:
         - name: Check out the repo
           uses: actions/checkout@v2
@@ -39,8 +40,7 @@
           uses: appleboy/ssh-action@master
           with:
             host: ${{ secrets.HOST }}
-            username: ${{ secrets.USER }}
-            key: ${{ secrets.SSH_KEY }}
+            username: ${{ secrets.SERVER_USER }}
             passphrase: ${{ secrets.PASSPHRASE }}
             script: |
               cd alpha_backend
