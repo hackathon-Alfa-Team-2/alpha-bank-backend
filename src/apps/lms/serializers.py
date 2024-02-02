@@ -1,6 +1,6 @@
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from django.utils import timezone
 
 from src.apps.lms.models import LMS
 from src.apps.tasks.serializers import TaskSerializer
@@ -29,7 +29,6 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
 
     tasks = TaskSerializer(many=True, read_only=True)
     is_active = serializers.BooleanField(default=True)
-    deadline = serializers.DateTimeField()
 
     class Meta:
         model = LMS
