@@ -7,13 +7,13 @@ env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = (
-    "django-insecure-mrkd2u!1=7d%6-y(kn#n4tkxf^t0!36sulqf!tsg35zvtc5r(0"
-)
+SECRET_KEY = env.str("DJANGO_SECRET_KEY")
 
 DEBUG = False
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -67,12 +67,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": env.str("DB_ENGINE"),
-        "NAME": env.str("DB_NAME"),
-        "USER": env.str("DB_USER"),
-        "PASSWORD": env.str("DB_PASSWORD"),
-        "HOST": env.str("DB_HOST"),
-        "PORT": env.int("DB_PORT"),
+        "ENGINE": env.str("DB_ENGINE", "django.db.backends.postgresql"),
+        "NAME": env.str("POSTGRES_DB", "django"),
+        "USER": env.str("POSTGRES_USER", "django"),
+        "PASSWORD": env.str("POSTGRES_PASSWORD", ""),
+        "HOST": env.str("DB_HOST", ""),
+        "PORT": env.int("DB_PORT", 5432),
     }
 }
 
@@ -121,6 +121,8 @@ DJOSER = {
 AUTH_USER_MODEL = "users.CustomUser"
 
 # Swagger settings
+
+BASE_REQUEST_URL = env.str("BASE_REQUEST_URL")
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {

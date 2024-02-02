@@ -4,10 +4,14 @@ import sys
 
 from django.core.management.base import BaseCommand
 from django.db.utils import DatabaseError
+from environs import Env
+from tqdm import tqdm
 
 from src.apps.lms.models import LMS
 from src.apps.tasks.models import Task
 from src.apps.users.models import CustomUser, Role, Grade, Position
+
+env = Env()
 
 logging.basicConfig(
     level=logging.INFO,
@@ -26,6 +30,8 @@ class Command(BaseCommand):
         Task: "tasks_mock",
     }
     DATA_PATH = "src/apps/api_v1/management/mock_data/{}.csv"
+    SUPERUSER_USERNAME = env.str("SUPERUSER_USERNAME")
+    SUPERUSER_PASSWORD = env.str("SUPERUSER_PASSWORD")
 
     def handle(self, *args, **options):
         try:
@@ -33,6 +39,12 @@ class Command(BaseCommand):
                 logger.info("Starting to upload data.")
                 for model, file_name in self.MODELS_FILES_NAMES.items():
                     self.load_csv_to_db(model=model, file_name=file_name)
+                if self.SUPERUSER_USERNAME and self.SUPERUSER_PASSWORD:
+                    CustomUser.objects.create_superuser(
+                        username=self.SUPERUSER_USERNAME,
+                        password=self.SUPERUSER_PASSWORD,
+                    )
+                    logger.info("The superuser has been created.")
                 logger.info("The data has been uploaded successfully.")
             else:
                 sys.exit()
@@ -56,14 +68,31 @@ class Command(BaseCommand):
         return True
 
     @classmethod
+    def add_instance(cls, model, row: dict) -> dict:
+        if model is CustomUser:
+            supervisor_id = row.pop("supervisor")
+            if supervisor_id:
+                row["supervisor"] = CustomUser.objects.get(id=supervisor_id)
+            row["role"] = Role.objects.get(id=row.pop("role"))
+            row["position"] = Position.objects.get(id=row.pop("position"))
+            row["grade"] = Grade.objects.get(id=row.pop("grade"))
+        elif model is LMS:
+            row["employee"] = CustomUser.objects.get(id=row.pop("employee"))
+            row["supervisor"] = CustomUser.objects.get(
+                id=row.pop("supervisor")
+            )
+        elif model is Task:
+            row["lms"] = LMS.objects.get(id=row.pop("lms"))
+        return row
+
+    @classmethod
     def load_csv_to_db(cls, model, file_name):
         with open(cls.DATA_PATH.format(file_name)) as csvfile:
             dict_reader = csv.DictReader(csvfile, delimiter=",")
-            for row in dict_reader:
+            for row in tqdm(dict_reader, desc=model.__name__):
+                row = cls.add_instance(model=model, row=row)
                 if model == CustomUser:
-                    row["username"] = CustomUser(**row).generate_username()
                     CustomUser.objects.create_user(**row)
                 else:
                     model.objects.create(**row)
             csvfile.close()
-        logger.info(f"The data has been added to the table {model.__name__}.")

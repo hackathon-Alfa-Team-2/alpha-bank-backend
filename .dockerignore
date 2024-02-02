@@ -1,0 +1,9 @@
+# Файл .dockerignore
+venv
+.git
+db.sqlite3 
+config/.env
+.idea
+.vscode
+*/local_settings.py
+*/.DS_Store
