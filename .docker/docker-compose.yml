@@ -1,22 +1,17 @@
 version: '3.3'
 
-volumes:
-  static_alpha:
-  media_alpha:
-  logs_alpha:
-  pg_data:
-
 services:
 
   db:
     image: postgres:14
+    restart: always
     env_file: ../config/.env
     volumes:
       - pg_data:/var/lib/postgresql/data
 
   backend:
     image: andreydogadkin/alpha-backend:latest
-    restart: on-failure
+    restart: always
     env_file:
       - ../config/.env
     volumes:
@@ -34,6 +29,7 @@ services:
 
   nginx:
     image: nginx:1.25.0
+    restart: always
     ports:
       - "8000:80"
     volumes:
@@ -42,3 +38,9 @@ services:
       - media_alpha:/media/
     depends_on:
       - backend
+
+volumes:
+  static_alpha:
+  media_alpha:
+  logs_alpha:
+  pg_data:
