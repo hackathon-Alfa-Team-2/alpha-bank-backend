@@ -10,13 +10,11 @@ RUN apt-get update && \
 
 COPY ../requirements.prod.txt /app-backend/
 
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.prod.txt
+RUN pip install --upgrade pip  \
+    && pip install --no-cache-dir -r requirements.prod.txt
 
-# Удаление временных зависимостей
 RUN apt-get remove -y gcc && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
-# Копирование остальных файлов в рабочий каталог
 COPY ../.. /app-backend/

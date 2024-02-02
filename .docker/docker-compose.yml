@@ -3,7 +3,7 @@ version: '3.3'
 volumes:
   static_alpha:
   media_alpha:
-  gunicorn_log:
+  logs_alpha:
   pg_data:
 
 services:
@@ -16,18 +16,18 @@ services:
 
   backend:
     image: andreydogadkin/alpha-backend:latest
-    restart: always
+    restart: on-failure
     env_file:
       - ../config/.env
     volumes:
       - static_alpha:/backend_static/
       - media_alpha:/backend_media/
-      - gunicorn_log:/logs/
+      - logs_alpha:/logs/
     command: bash -c "
-      python manage.py collectstatic
+      python manage.py migrate --noinput
+      && python manage.py collectstatic --noinput
       && cp -r /app-backend/static/. /backend_static/static/
-      && python manage.py migrate
-      && gunicorn --bind 0.0.0.0:8000 config.wsgi --error-logfile /logs/logs.txt
+      && gunicorn --bind 0.0.0.0:8000 config.wsgi --error-logfile /logs/gunicorn.log
       "
     depends_on:
       - db

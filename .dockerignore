@@ -6,3 +6,4 @@ config/.env
 .idea
 .vscode
 */local_settings.py
+*/.DS_Store
