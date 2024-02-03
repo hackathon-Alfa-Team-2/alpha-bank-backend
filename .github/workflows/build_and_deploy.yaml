@@ -2,7 +2,7 @@ name: alpha workflow
 
 on:
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
     types:
       - closed
 
@@ -26,7 +26,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/alpha_backend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/alpha-backend:latest
 
   deploy:
     runs-on: ubuntu-latest
