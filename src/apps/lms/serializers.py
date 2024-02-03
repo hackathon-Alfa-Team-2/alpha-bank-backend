@@ -86,7 +86,7 @@ class FullDataLMSSerializer(serializers.ModelSerializer):
         return data
 
     def validate_deadline(self, value):
-        if timezone.now() >= value:
+        if timezone.now().date() >= value:
             raise serializers.ValidationError(
                 "Дата дэдлайна не может быть раньше даты создания"
             )
