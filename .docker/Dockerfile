@@ -5,7 +5,7 @@ WORKDIR /app-backend
 ENV PYTHONUNBUFFERED=1 \
 		PYTHONDOWNTWRITEBYTECODE=1
 
-COPY ../requirements.prod.txt /app-backend/
+COPY requirements.prod.txt /app-backend/
 
 RUN apt-get update && \
     apt-get clean && \
