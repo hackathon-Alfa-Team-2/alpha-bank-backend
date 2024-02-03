@@ -40,11 +40,10 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            cd alpha_backend
-
+            cd alfa-hackaton/docker/
             sudo docker compose -f docker-compose.yml pull
-
             sudo docker compose -f docker-compose.yml down
             sudo docker compose -f docker-compose.yml up -d
