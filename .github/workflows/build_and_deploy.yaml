@@ -2,7 +2,7 @@ name: alpha workflow
 
 on:
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "main" ]
     types:
       - closed
 
@@ -10,7 +10,7 @@ jobs:
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -44,7 +44,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd ${{ secrets.PATH_TO_REPO }}
-            git checkout develop
+            git checkout main
             git pull
             sudo docker compose -f docker-compose.yml pull
             sudo docker compose -f docker-compose.yml down
