@@ -16,13 +16,12 @@ class CommentAPITestCase(APITestCase):
         self.supervisor = CustomUser.objects.create(
             username="supervisor", password="testpassword"
         )
-        self.supervisor.save()
+
         self.employee = CustomUser.objects.create(
             username="employee",
             password="testpassword",
             supervisor=self.supervisor,
         )
-        self.employee.save()
 
         tomorrow = datetime.now() + timedelta(days=1)
 
@@ -31,9 +30,7 @@ class CommentAPITestCase(APITestCase):
             supervisor=self.supervisor,
             deadline=tomorrow,
         )
-        self.lms.save()
         self.task = Task.objects.create(lms=self.lms, deadline=tomorrow)
-        self.task.save()
 
         self.supervisor_token = Token.objects.create(user=self.supervisor)
         self.employee_token = Token.objects.create(user=self.employee)
