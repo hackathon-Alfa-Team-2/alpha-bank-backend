@@ -2,7 +2,7 @@ name: alpha workflow
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ "develop" ]
     types:
       - closed
 
@@ -10,7 +10,7 @@ jobs:
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/develop'
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -42,12 +42,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-
           script: |
-            git clone https://github.com/username/repository.git --branch develop -- path/to/file.txt
-
-            
-            cd alfa-hackaton/docker/
+            cd ${{ secrets.PATH_TO_REPO }}
+            git checkout develop
+            git pull
             sudo docker compose -f docker-compose.yml pull
             sudo docker compose -f docker-compose.yml down
+            sudo docker volume rm docker_static_alpha
             sudo docker compose -f docker-compose.yml up -d
