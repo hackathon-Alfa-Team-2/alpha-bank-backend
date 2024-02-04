@@ -1,8 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint, CheckConstraint, Q
-from django.contrib.auth import get_user_model
 
 from config.settings import (
     DEFAULT_ASSESSMENT_BEFORE,
@@ -13,16 +13,14 @@ from config.settings import (
     STATUS_FIELD_LENGTH,
 )
 
-
 CustomUser = get_user_model()
 
 
 class Status(models.TextChoices):
-    IN_PROGRESS = "В работе", "in_progress"
-    NOT_DONE = "Не выполнен", "not_done"
-    COMPLETED = "Выполнен", "completed"
-    ABSENT = "Отсутствует", "absent"
-    CANCELED = "Отменен", "canceled"
+    IN_PROGRESS = "in_progress", "В работе"
+    NOT_DONE = "not_done", "Не выполнен"
+    COMPLETED = "completed", "Выполнен"
+    CANCELED = "canceled", "Отменен"
 
 
 class LMS(models.Model):
@@ -50,7 +48,7 @@ class LMS(models.Model):
         max_length=STATUS_FIELD_LENGTH,
         verbose_name="Статус ИПР",
         choices=Status.choices,
-        default=Status.ABSENT,
+        default=Status.IN_PROGRESS,
     )
     skill_assessment_before = models.PositiveSmallIntegerField(
         default=DEFAULT_ASSESSMENT_BEFORE,
