@@ -23,9 +23,9 @@ class Task(models.Model):
     )
     status = models.CharField(
         max_length=STATUS_FIELD_LENGTH,
-        verbose_name="Статус задачи.",
+        verbose_name="Статус задачи",
         choices=Status.choices,
-        default=Status.ABSENT,
+        default=Status.IN_PROGRESS,
     )
     date_added = models.DateField(
         auto_now=True,
