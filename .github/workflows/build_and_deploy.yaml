@@ -42,7 +42,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
+
           script: |
+            git clone https://github.com/username/repository.git --branch develop -- path/to/file.txt
+
+            
             cd alfa-hackaton/docker/
             sudo docker compose -f docker-compose.yml pull
             sudo docker compose -f docker-compose.yml down

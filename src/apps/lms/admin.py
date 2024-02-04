@@ -26,14 +26,15 @@ class LMSAdminForm(forms.ModelForm):
             raise forms.ValidationError("Deadline должен быть в будущем.")
         return self.cleaned_data["deadline"]
 
-    def clean_employee(self):
-        employee = self.cleaned_data.get("employee")
-        supervisor = self.cleaned_data.get("supervisor")
+    def clean(self):
+        data = super().clean()
+        employee = data.get("employee")
+        supervisor = data.get("supervisor")
         if employee.supervisor != supervisor:
             raise forms.ValidationError(
                 "Сотрудник должен быть подчинен указанному руководителю."
             )
-        return self.cleaned_data["employee"]
+        return data
 
 
 @admin.register(LMS)
