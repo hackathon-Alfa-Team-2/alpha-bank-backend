@@ -30,6 +30,8 @@ services:
   redis:
     restart: always
     image: redis:7.2.4
+    #    ports:
+    #      - "6379:6379"
     expose:
       - 6379
     command: redis-server
@@ -40,7 +42,7 @@ services:
     env_file:
       - ../config/.env
     command: bash -c "
-      && celery -A config worker --beat -l info
+      celery -A config worker --beat -l info
       "
     depends_on:
       - db

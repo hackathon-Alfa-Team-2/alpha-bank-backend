@@ -152,7 +152,6 @@ TEXT_FIELD_LENGTH = 2048
 # corsheaders
 CORS_ALLOW_ALL_ORIGINS = True
 
-
 # celery
 
 CELERY_RESULT_BACKEND = "django-db"
@@ -164,7 +163,7 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": env.str("CELERY_BROKER_REDIS_URL"),
+        "LOCATION": CELERY_BROKER_URL,
         "KEY_PREFIX": "cache",
     }
 }
