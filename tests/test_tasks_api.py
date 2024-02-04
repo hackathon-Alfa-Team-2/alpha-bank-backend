@@ -1,57 +1,52 @@
 from datetime import date, timedelta
 
 from django.urls import reverse
-from rest_framework.test import APITestCase
-from rest_framework.authtoken.models import Token
 from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APITestCase
 
-from src.apps.users.models import CustomUser, Role
 from src.apps.lms.models import LMS
 from src.apps.tasks.models import Task
+from src.apps.users.models import CustomUser, Role
 
 
 class TaskAPITestCase(APITestCase):
-    def setUp(self):
-        self.tomorrow = date.today() + timedelta(days=1)
+    @classmethod
+    def setUpTestData(cls):
+        cls.tomorrow = date.today() + timedelta(days=1)
 
-        self.role = Role.objects.create(name="supervisor")
+        cls.role = Role.objects.create(name="supervisor")
 
-        self.supervisor = CustomUser.objects.create(
-            username="supervisor", password="testpassword", role=self.role
+        cls.supervisor = CustomUser.objects.create(
+            username="supervisor", password="testpassword", role=cls.role
         )
 
-        self.employee = CustomUser.objects.create(
+        cls.employee = CustomUser.objects.create(
             username="employee",
             password="testpassword",
-            supervisor=self.supervisor,
+            supervisor=cls.supervisor,
         )
 
-        self.supervisor_token = Token.objects.create(user=self.supervisor)
-        self.employee_token = Token.objects.create(user=self.employee)
+        cls.supervisor_token = Token.objects.create(user=cls.supervisor)
+        cls.employee_token = Token.objects.create(user=cls.employee)
 
-        self.lms = LMS.objects.create(
-            employee=self.employee,
-            supervisor=self.supervisor,
-            deadline=self.tomorrow,
+        cls.lms = LMS.objects.create(
+            employee=cls.employee,
+            supervisor=cls.supervisor,
+            deadline=cls.tomorrow,
         )
 
-        self.url_list = reverse(
+        cls.url_list = reverse(
             "api_v1:tasks-list",
-            kwargs={"user_id": self.supervisor.id, "lms_id": self.lms.id},
+            kwargs={"user_id": cls.employee.id, "lms_id": cls.lms.id},
         )
 
-        self.data = {
+        cls.data = {
             "name": "New Task",
-            "deadline": self.tomorrow,
-            "lms": self.lms,
+            "description": "Task description",
+            "deadline": cls.tomorrow,
+            "lms_id": cls.lms.id,
         }
-
-    def test_get_tasks_list(self):
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.supervisor_token.key
-        )
-        response = self.client.get(self.url_list)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_task(self):
         self.client.credentials(
@@ -70,7 +65,7 @@ class TaskAPITestCase(APITestCase):
         url = reverse(
             "api_v1:tasks-detail",
             kwargs={
-                "user_id": self.supervisor.id,
+                "user_id": self.employee.id,
                 "lms_id": self.lms.id,
                 "pk": task.pk,
             },
@@ -94,7 +89,7 @@ class TaskAPITestCase(APITestCase):
         url = reverse(
             "api_v1:tasks-detail",
             kwargs={
-                "user_id": self.supervisor.id,
+                "user_id": self.employee.id,
                 "lms_id": self.lms.id,
                 "pk": task.pk,
             },

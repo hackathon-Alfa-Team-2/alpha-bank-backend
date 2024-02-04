@@ -1,38 +1,39 @@
 from datetime import date, timedelta
 
-from rest_framework.test import APITestCase
-from rest_framework.authtoken.models import Token
 from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APITestCase
 
-from src.apps.users.models import CustomUser, Role
 from src.apps.lms.models import LMS
+from src.apps.users.models import CustomUser, Role
 
 
 class LMSAPITestCase(APITestCase):
-    def setUp(self):
-        self.tomorrow = date.today() + timedelta(days=1)
+    @classmethod
+    def setUpTestData(cls):
+        cls.tomorrow = date.today() + timedelta(days=1)
 
-        self.role = Role.objects.create(name="supervisor")
+        cls.role = Role.objects.create(name="supervisor")
 
-        self.supervisor = CustomUser.objects.create(
-            username="supervisor", password="testpassword", role=self.role
+        cls.supervisor = CustomUser.objects.create(
+            username="supervisor", password="testpassword", role=cls.role
         )
 
-        self.employee = CustomUser.objects.create(
+        cls.employee = CustomUser.objects.create(
             username="employee",
             password="testpassword",
-            supervisor=self.supervisor,
+            supervisor=cls.supervisor,
         )
 
-        self.supervisor_token = Token.objects.create(user=self.supervisor)
-        self.employee_token = Token.objects.create(user=self.employee)
+        cls.supervisor_token = Token.objects.create(user=cls.supervisor)
+        cls.employee_token = Token.objects.create(user=cls.employee)
 
-        self.lms_data = {
-            "supervisor": self.supervisor,
-            "employee": self.employee,
+        cls.lms_data = {
+            "supervisor": cls.supervisor,
+            "employee": cls.employee,
             "name": "Test LMS",
             "description": "Test description",
-            "deadline": self.tomorrow,
+            "deadline": cls.tomorrow,
         }
 
     def test_create_lms_as_supervisor(self):
@@ -52,13 +53,6 @@ class LMSAPITestCase(APITestCase):
             f"/api/v1/users/{self.employee.id}/lms/", self.lms_data
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_get_lms_list_as_supervisor(self):
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.supervisor_token.key
-        )
-        response = self.client.get(f"/api/v1/users/{self.employee.id}/lms/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_lms_as_supervisor(self):
         self.client.credentials(

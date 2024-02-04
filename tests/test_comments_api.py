@@ -1,45 +1,46 @@
 from datetime import datetime, timedelta
 
 from django.urls import reverse
-from rest_framework.test import APITestCase
-from rest_framework.authtoken.models import Token
 from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APITestCase
 
-from src.apps.tasks.models import Task
 from src.apps.comments.models import Comment
 from src.apps.lms.models import LMS
+from src.apps.tasks.models import Task
 from src.apps.users.models import CustomUser
 
 
 class CommentAPITestCase(APITestCase):
-    def setUp(self):
-        self.supervisor = CustomUser.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        cls.supervisor = CustomUser.objects.create(
             username="supervisor", password="testpassword"
         )
 
-        self.employee = CustomUser.objects.create(
+        cls.employee = CustomUser.objects.create(
             username="employee",
             password="testpassword",
-            supervisor=self.supervisor,
+            supervisor=cls.supervisor,
         )
 
         tomorrow = datetime.now() + timedelta(days=1)
 
-        self.lms = LMS.objects.create(
-            employee=self.employee,
-            supervisor=self.supervisor,
+        cls.lms = LMS.objects.create(
+            employee=cls.employee,
+            supervisor=cls.supervisor,
             deadline=tomorrow,
         )
-        self.task = Task.objects.create(lms=self.lms, deadline=tomorrow)
+        cls.task = Task.objects.create(lms=cls.lms, deadline=tomorrow)
 
-        self.supervisor_token = Token.objects.create(user=self.supervisor)
-        self.employee_token = Token.objects.create(user=self.employee)
+        cls.supervisor_token = Token.objects.create(user=cls.supervisor)
+        cls.employee_token = Token.objects.create(user=cls.employee)
 
-        self.url_list = reverse(
-            "api_v1:comments-list", kwargs={"task_id": self.task.id}
+        cls.url_list = reverse(
+            "api_v1:comments-list", kwargs={"task_id": cls.task.id}
         )
 
-        self.data = {"text_of_comment": "Test comment text"}
+        cls.data = {"text_of_comment": "Test comment text"}
 
     def test_create_comment(self):
         self.client.credentials(
