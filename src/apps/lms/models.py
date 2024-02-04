@@ -1,8 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint, CheckConstraint, Q
-from django.contrib.auth import get_user_model
 
 from config.settings import (
     DEFAULT_ASSESSMENT_BEFORE,
@@ -12,7 +12,6 @@ from config.settings import (
     NAME_FIELD_LENGTH,
     STATUS_FIELD_LENGTH,
 )
-
 
 CustomUser = get_user_model()
 
