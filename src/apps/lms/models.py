@@ -19,6 +19,7 @@ CustomUser = get_user_model()
 class Status(models.TextChoices):
     IN_PROGRESS = "in_progress", "В работе"
     NOT_DONE = "not_done", "Не выполнен"
+    ABSENT = "absent", "Отсутствует"
     COMPLETED = "completed", "Выполнен"
     CANCELED = "canceled", "Отменен"
 
