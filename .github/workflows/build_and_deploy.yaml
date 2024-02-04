@@ -43,7 +43,10 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            cd alfa-hackaton/docker/
+            cd ${{ secrets.PATH_TO_REPO }}
+            git checkout main
+            git pull
             sudo docker compose -f docker-compose.yml pull
             sudo docker compose -f docker-compose.yml down
+            sudo docker volume rm docker_static_alpha
             sudo docker compose -f docker-compose.yml up -d
