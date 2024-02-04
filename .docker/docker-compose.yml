@@ -27,6 +27,25 @@ services:
     depends_on:
       - db
 
+  redis:
+    restart: always
+    image: redis:7.2.4
+    expose:
+      - 6379
+    command: redis-server
+
+  celery_worker:
+    image: andreydogadkin/alpha-backend:latest
+    restart: always
+    env_file:
+      - ../config/.env
+    command: bash -c "
+      celery -A config worker --beat -l info
+      "
+    depends_on:
+      - db
+      - redis
+
   nginx:
     image: nginx:1.25.0
     restart: always

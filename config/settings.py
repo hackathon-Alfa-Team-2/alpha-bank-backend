@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_yasg",
     "rest_framework.authtoken",
+    "django_celery_beat",
+    "django_celery_results",
     "src.apps.comments",
     "src.apps.lms",
     "src.apps.tasks",
@@ -149,6 +151,25 @@ TEXT_FIELD_LENGTH = 2048
 
 # corsheaders
 CORS_ALLOW_ALL_ORIGINS = True
+
+# celery
+
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BROKER_URL = env.str("CELERY_BROKER_REDIS_URL")
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+# Cache
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": CELERY_BROKER_URL,
+        "KEY_PREFIX": "cache",
+    }
+}
+
+CACHE_MIDDLEWARE_SECONDS = 60 * 5
+STATISTIC_UPDATE_SECONDS = 60 * 60
 
 try:
     from .local_settings import *
