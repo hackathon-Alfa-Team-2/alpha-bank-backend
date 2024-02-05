@@ -1,0 +1,20 @@
+[flake8]
+
+max-line-length = 79
+
+ignore =
+	W503,
+	F811
+
+exclude =
+	tests/,
+	*/migrations/,
+	venv/,
+	*/venv/,
+	env/
+	*/env/,
+
+per-file-ignores =
+	*/settings.py:E501,F403,F401,
+
+	*/manage.py:E501

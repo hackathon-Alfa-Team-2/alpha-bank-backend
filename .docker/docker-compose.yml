@@ -1,0 +1,65 @@
+version: '3.3'
+
+services:
+
+  db:
+    image: postgres:14
+    restart: always
+    env_file: ../config/.env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  backend:
+    image: andreydogadkin/alpha-backend:latest
+    restart: always
+    env_file:
+      - ../config/.env
+    volumes:
+      - static_alpha:/backend_static/
+      - media_alpha:/media/
+      - logs_alpha:/logs/
+    command: bash -c "
+      python manage.py migrate --noinput
+      && python manage.py collectstatic --noinput
+      && cp -r /app-backend/static/. /backend_static/static/
+      && gunicorn --bind 0.0.0.0:8000 config.wsgi --error-logfile /logs/gunicorn.log
+      "
+    depends_on:
+      - db
+
+  redis:
+    restart: always
+    image: redis:7.2.4
+    expose:
+      - 6379
+    command: redis-server
+
+  celery_worker:
+    image: andreydogadkin/alpha-backend:latest
+    restart: always
+    env_file:
+      - ../config/.env
+    command: bash -c "
+      celery -A config worker --beat -l info
+      "
+    depends_on:
+      - db
+      - redis
+
+  nginx:
+    image: nginx:1.25.0
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_alpha:/staticfiles/
+      - media_alpha:/media/
+    depends_on:
+      - backend
+
+volumes:
+  static_alpha:
+  media_alpha:
+  logs_alpha:
+  pg_data:
