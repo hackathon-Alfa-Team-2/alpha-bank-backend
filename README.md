@@ -2,11 +2,12 @@
 
 #### Задача: создание MVP индивидуального плана развития для сотрудников в Альфа-Банке.
 
-Общие возможности приложения:
+**Общие возможности приложения:**
 
 Руководитель может просматривать список сотрудников, добавлять индивидуальные планы развития
 сотрудникам. К каждому ИПР можно добавить задачи, к каждой задаче могут оставить свои комментарии
 руководитель и сотрудник.
+___
 
 ## Использованные технологии.
 
@@ -22,6 +23,7 @@
 <img src="https://img.shields.io/badge/github%20actions%20-%232671E5.svg?&style=for-the-badge&logo=github%20actions&logoColor=white"/>
 <img src="https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white"/>
 <img src="https://img.shields.io/badge/celery-%2337814A.svg?&style=for-the-badge&logo=celery&logoColor=white" />
+___
 
 ## Установка.
 
@@ -31,54 +33,59 @@
    cd alpha-bank-backend
    ```
 
-2.
-    * Создайте файл `.env` по примеру `.env.example` в папке config и заполните его.
+2. Создайте файл `.env` по примеру `.env.example` в папке config и заполните его.
 
-  ```
-  #Django
-  DJANGO_SECRET_KEY=''
-  ALLOWED_HOSTS=localhost,127.0.0.1
-  CSRF_TRUSTED_ORIGINS=http://example.net/,https://example.net/
-   
-  # Postgres
-  DB_ENGINE='django.db.backends.postgresql_psycopg2'
-  POSTGRES_DB='postgres'
-  POSTGRES_USER='postgres'
-  POSTGRES_PASSWORD='exaple-password'
-  DB_HOST=db
-  DB_PORT=5432
-   
-  # Celery & redis
-  CELERY_BROKER_REDIS_URL="redis://redis:6379/1"
-   
-  # Swagger docs
-  BASE_REQUEST_URL=http://127.0.0.1:8000
-   
-  # Для автоматического создания суперпользователя
-  SUPERUSER_USERNAME='superuser-username'
-  SUPERUSER_PASSWORD='superuser-password'
-  ```
+    ```
+    #Django
+    DJANGO_SECRET_KEY=''
+    ALLOWED_HOSTS=localhost,127.0.0.1
+    CSRF_TRUSTED_ORIGINS=http://example.net/,https://example.net/
+    
+    # Postgres
+    DB_ENGINE='django.db.backends.postgresql_psycopg2'
+    POSTGRES_DB='postgres'
+    POSTGRES_USER='postgres'
+    POSTGRES_PASSWORD='exaple-password'
+    DB_HOST=db
+    DB_PORT=5432
+    
+    # Celery & redis
+    CELERY_BROKER_REDIS_URL="redis://redis:6379/1"
+    
+    # Swagger docs
+    BASE_REQUEST_URL=http://127.0.0.1:8000
+    
+    # Для автоматического создания суперпользователя
+    SUPERUSER_USERNAME='superuser-username'
+    SUPERUSER_PASSWORD='superuser-password'
+    ```
 
-* DJANGO_SECRET_KEY можно сгенерировать таким способом:
+   **DJANGO_SECRET_KEY можно сгенерировать таким способом:*
    ```
-  python manage.py shell
-  from django.core.management import utils
-  utils.get_random_secret_key()
+    python manage.py shell
+    from django.core.management import utils
+    utils.get_random_secret_key()
    ```
 
-4. Из корневой дирректории выполните следующие комманды:
+3. Из корневой дирректории выполните следующие комманды:
    ```
    cd .docker
    docker compose up -d
    ```
 
-5. Загрузите тестовые данные в базу командой:
+4. Загрузите тестовые данные в базу командой:
 
    ```
    docker compose exec backend python manage.py loadmockdata
    ```
-6. Для доступа в админ панель используйте `SUPERUSER_USERNAME` и `SUPERUSER_PASSWORD` из .`env`
+5. Для доступа в админ панель используйте `SUPERUSER_USERNAME` и `SUPERUSER_PASSWORD` из .`env`
    файла.
+
+___
+
+## Тестирование.
+
+#### Документация API: [Swagger](https://alfa-people.ddns.net/api/v1/docs/)
 
 Данные тестовых пользователей:
 
@@ -90,6 +97,8 @@
 | employee   | user4sv1@ya.ru    | User4       |
 | employee   | user5sv2@ya.ru    | User5       |
 | employee   | user6sv1@ya.ru    | User6       |
+
+___
 
 ## Наша команда разработчиков:<br>
 
