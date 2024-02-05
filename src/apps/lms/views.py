@@ -16,6 +16,7 @@ from src.base.tasks import update_stats_cache
 class LMSViewSet(viewsets.ModelViewSet):
     serializer_class = FullDataLMSSerializer
     permission_classes = [IsAuthenticated, IsAdminOrSupervisorOrLMSExecutor]
+    http_method_names = ["get", "post", "patch", "delete", "head", "options"]
     swagger_tags = ["LMS"]
 
     def get_queryset(self):

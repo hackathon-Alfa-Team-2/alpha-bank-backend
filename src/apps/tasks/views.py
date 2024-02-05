@@ -2,8 +2,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from config.settings import CACHE_MIDDLEWARE_SECONDS
 
+from config.settings import CACHE_MIDDLEWARE_SECONDS
 from src.apps.tasks.models import Task
 from src.apps.tasks.serializers import TaskSerializer
 from src.base.permissions import IsAdminOrSupervisorOrTaskExecutor
@@ -15,6 +15,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         IsAuthenticated,
         IsAdminOrSupervisorOrTaskExecutor,
     )
+    http_method_names = ["get", "post", "patch", "delete", "head", "options"]
     swagger_tags = ["Tasks"]
 
     def get_queryset(self):
