@@ -37,6 +37,8 @@ jobs:
         env:
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           CSRF_TRUSTED_ORIGINS: ${{ secrets.CSRF_TRUSTED_ORIGINS }}
+          BASE_REQUEST_URL: ${{ secrets.BASE_REQUEST_URL }}
+          CELERY_BROKER_REDIS_URL: ${{ secrets.CELERY_BROKER_REDIS_URL }}
           ALLOWED_HOSTS: '*'
           DB_ENGINE: django.db.backends.postgresql_psycopg2
           POSTGRES_DB: django_db
