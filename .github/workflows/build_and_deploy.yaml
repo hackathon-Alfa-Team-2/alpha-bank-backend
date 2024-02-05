@@ -36,6 +36,7 @@ jobs:
       - name: Django tests
         env:
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          CSRF_TRUSTED_ORIGINS: ${{ secrets.CSRF_TRUSTED_ORIGINS }}
           ALLOWED_HOSTS: '*'
           DB_ENGINE: django.db.backends.postgresql_psycopg2
           POSTGRES_DB: django_db
