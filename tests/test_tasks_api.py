@@ -75,7 +75,7 @@ class TaskAPITestCase(APITestCase):
             "description": "Updated Description",
             "deadline": self.tomorrow,
         }
-        response = self.client.put(url, data)
+        response = self.client.patch(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         task.refresh_from_db()
         self.assertEqual(task.name, "Updated Task")
