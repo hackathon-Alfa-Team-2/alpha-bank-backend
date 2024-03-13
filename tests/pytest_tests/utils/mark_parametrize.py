@@ -1,5 +1,9 @@
 from pytest_lazy_fixtures import lf
 
+from tests.pytest_tests.fixtures.lms_fixtures import (
+    COUNT_MINOR_LMS_FOR_EMPLOYEE_FIRST,
+    COUNT_MINOR_LMS_FOR_EMPLOYEE_SECOND,
+)
 from tests.pytest_tests.fixtures.users_fixtures import (
     COUNT_MINOR_EMPLOYEES_SUPERVISOR_FIRST,
     COUNT_MINOR_EMPLOYEES_SUPERVISOR_SECOND,
@@ -96,5 +100,21 @@ users_test_05_parametrize = (
     (
         (lf("supervisor_first_client"), lf("employee_second")),
         (lf("supervisor_second_client"), lf("employee_first")),
+    ),
+)
+
+lms_test_01_parametrize = (
+    "supervisor_client, employee_id, lms_count",
+    (
+        (
+            lf("supervisor_first_client"),
+            lf("employee_first.id"),
+            COUNT_MINOR_LMS_FOR_EMPLOYEE_FIRST,
+        ),
+        (
+            lf("supervisor_second_client"),
+            lf("employee_second.id"),
+            COUNT_MINOR_LMS_FOR_EMPLOYEE_SECOND,
+        ),
     ),
 )
