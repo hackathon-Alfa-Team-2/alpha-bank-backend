@@ -4,7 +4,7 @@ import pytest
 from django.urls import reverse
 from pytest_lazy_fixtures import lf
 
-from tests.pytest_tests.conftest import (
+from tests.pytest_tests.fixtures.users_fixtures import (
     COUNT_MINOR_EMPLOYEES_SUPERVISOR_FIRST,
     COUNT_MINOR_EMPLOYEES_SUPERVISOR_SECOND,
 )
