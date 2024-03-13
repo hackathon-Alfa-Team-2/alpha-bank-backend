@@ -2,33 +2,11 @@ from http import HTTPStatus
 
 import pytest
 from django.urls import reverse
-from pytest_lazy_fixtures import lf
 
-from tests.pytest_tests.fixtures.users_fixtures import (
-    COUNT_MINOR_EMPLOYEES_SUPERVISOR_FIRST,
-    COUNT_MINOR_EMPLOYEES_SUPERVISOR_SECOND,
-)
+from tests.pytest_tests.utils import mark_parametrize
 
 
-@pytest.mark.parametrize(
-    "url_name, supervisor_client, employee_id",
-    (
-        ("api_v1:users-list", lf("supervisor_first_client"), None),
-        ("api_v1:users-list", lf("supervisor_second_client"), None),
-        ("api_v1:users-me", lf("supervisor_first_client"), None),
-        ("api_v1:users-me", lf("supervisor_second_client"), None),
-        (
-            "api_v1:users-detail",
-            lf("supervisor_first_client"),
-            lf("employee_first.id"),
-        ),
-        (
-            "api_v1:users-detail",
-            lf("supervisor_second_client"),
-            lf("employee_second.id"),
-        ),
-    ),
-)
+@pytest.mark.parametrize(*mark_parametrize.users_test_00_parametrize)
 def test_00_supervisor_can_make_request_to_users_endpoints(
     supervisor_client,
     url_name,
@@ -46,19 +24,7 @@ def test_00_supervisor_can_make_request_to_users_endpoints(
     assert response.status_code == HTTPStatus.OK
 
 
-@pytest.mark.parametrize(
-    "supervisor_client, employees_count",
-    (
-        (
-            lf("supervisor_first_client"),
-            COUNT_MINOR_EMPLOYEES_SUPERVISOR_FIRST,
-        ),
-        (
-            lf("supervisor_second_client"),
-            COUNT_MINOR_EMPLOYEES_SUPERVISOR_SECOND,
-        ),
-    ),
-)
+@pytest.mark.parametrize(*mark_parametrize.users_test_01_parametrize)
 def test_01_supervisor_can_get_only_his_employees_list(
     supervisor_client,
     employees_count,
@@ -73,21 +39,7 @@ def test_01_supervisor_can_get_only_his_employees_list(
     assert response.data["count"] == employees_count
 
 
-@pytest.mark.parametrize(
-    "url_name, employee_client, employee",
-    (
-        (
-            "api_v1:users-me",
-            lf("employee_first_client"),
-            lf("employee_first"),
-        ),
-        (
-            "api_v1:users-me",
-            lf("employee_second_client"),
-            lf("employee_second"),
-        ),
-    ),
-)
+@pytest.mark.parametrize(*mark_parametrize.users_test_02_parametrize)
 def test_02_employee_can_make_request_to_user_me_endpoint(
     url_name, employee_client, employee
 ):
@@ -101,41 +53,7 @@ def test_02_employee_can_make_request_to_user_me_endpoint(
     ]
 
 
-@pytest.mark.parametrize(
-    "url_name, employee_client, user_id",
-    (
-        (
-            "api_v1:users-list",
-            lf("employee_first_client"),
-            None,
-        ),
-        (
-            "api_v1:users-list",
-            lf("employee_second_client"),
-            None,
-        ),
-        (
-            "api_v1:users-detail",
-            lf("employee_first_client"),
-            lf("employee_second.id"),
-        ),
-        (
-            "api_v1:users-detail",
-            lf("employee_first_client"),
-            lf("supervisor_first.id"),
-        ),
-        (
-            "api_v1:users-detail",
-            lf("employee_second_client"),
-            lf("employee_first.id"),
-        ),
-        (
-            "api_v1:users-detail",
-            lf("employee_second_client"),
-            lf("supervisor_second.id"),
-        ),
-    ),
-)
+@pytest.mark.parametrize(*mark_parametrize.users_test_03_parametrize)
 def test_03_employee_can_not_make_request_to_users_list_and_detail(
     employee_client, url_name, user_id
 ):
@@ -161,16 +79,13 @@ def test_04_supervisor_can_not_make_request_to_another_supervisor_detail(
     assert response.status_code == HTTPStatus.NOT_FOUND
 
 
-@pytest.mark.parametrize(
-    "supervisor_client, employee",
-    (
-        (lf("supervisor_first_client"), lf("employee_second")),
-        (lf("supervisor_second_client"), lf("employee_first")),
-    ),
-)
+@pytest.mark.parametrize(*mark_parametrize.users_test_05_parametrize)
 def test_05_supervisor_can_not_make_request_to_employee_not_subordinate(
     supervisor_client, employee
 ):
+    """
+    Руководитель не может сделать запрос на чужого подчиненного.
+    """
     url = reverse("api_v1:users-detail", args=[employee.id])
     response = supervisor_client.get(url)
     assert response.status_code == HTTPStatus.NOT_FOUND
