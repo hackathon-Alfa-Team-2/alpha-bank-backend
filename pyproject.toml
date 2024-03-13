@@ -1,6 +1,12 @@
 [tool.black]
-
 line-length = 79
 exclude = '''
 		venv/
 '''
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+norecursedirs = ["env/*", "venv/*"]
+addopts = "-vv -p no:cacheprovider"
+testpaths = "tests/pytest_tests/"
+python_files = "test_*.py"
