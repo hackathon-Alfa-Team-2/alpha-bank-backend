@@ -3,6 +3,7 @@ from http import HTTPStatus
 import pytest
 from django.urls import reverse
 
+from src.apps.lms.models import LMS
 from tests.pytest_tests.utils import mark_parametrize
 
 
@@ -25,6 +26,7 @@ class Test01LMS:
     def test_00_supervisor_can_get_lms_detail_your_subordinate(
         self,
         supervisor_first_client,
+        supervisor_first,
         lms_first,
         employee_first,
     ):
@@ -44,6 +46,9 @@ class Test01LMS:
         assert (
             response.data["description"] == lms_first.description
         ), "Ожидаемое описание ИПР отличается от полученного."
+        assert (
+            response.data["supervisor"] == supervisor_first.id
+        ), "Ожидаемый руководитель ИПР не совпадает с полученным."
 
     @pytest.mark.parametrize(*mark_parametrize.lms_test_01_parametrize)
     def test_01_supervisor_can_get_lms_list_your_subordinate(
@@ -78,6 +83,9 @@ class Test01LMS:
             f"Статус ответа <{response.status_code}> не совпадает "
             f"с ожидаемым <{exp_status}>.",
         )
+        assert (
+            LMS.objects.count() == 1
+        ), "При выполнении POST запроса ИПР не был создан."
         assert (
             response.data.get("name") == self.POST_LMS_DATA["name"]
         ), "Полученное имя ИПР не совпадает с ожидаемым."
@@ -136,3 +144,117 @@ class Test01LMS:
             f"Статус ответа <{response.status_code}> не совпадает "
             f"с ожидаемым <{exp_status}>.",
         )
+        assert (
+            LMS.objects.count() == 0
+        ), "При выполнении DELETE запроса ИПР не был удален."
+
+    def test_05_supervisor_can_not_get_lms_detail_not_your_subordinate(
+        self,
+        supervisor_second_client,
+        lms_first,
+        employee_first,
+    ):
+        """Руководитель не может просматривать ИПР чужого подчиненного."""
+        url = reverse(
+            "api_v1:lms-detail", args=[employee_first.id, lms_first.id]
+        )
+        exp_status = HTTPStatus.FORBIDDEN
+        response = supervisor_second_client.get(url)
+        assert response.status_code == exp_status, (
+            f"Статус ответа <{response.status_code}> не совпадает "
+            f"с ожидаемым <{exp_status}>.",
+        )
+
+    @pytest.mark.parametrize(*mark_parametrize.lms_test_06_parametrize)
+    def test_06_supervisor_can_not_get_lms_list_not_your_subordinate(
+        self,
+        supervisor_client,
+        employee_id,
+        minor_lms,
+    ):
+        """Руководитель не может получить список ИПР чужих подчиненных."""
+        url = reverse("api_v1:lms-list", args=[employee_id])
+        exp_status = HTTPStatus.FORBIDDEN
+        response = supervisor_client.get(url)
+        assert response.status_code == exp_status, (
+            f"Статус ответа <{response.status_code}> не совпадает "
+            f"с ожидаемым <{exp_status}>.",
+        )
+
+    def test_07_supervisor_can_not_post_lms_not_your_subordinate(
+        self,
+        supervisor_second_client,
+        employee_first,
+    ):
+        """Руководитель не может создать ИПР чужому подчиненному."""
+        url = reverse("api_v1:lms-list", args=[employee_first.id])
+        exp_status = HTTPStatus.FORBIDDEN
+        response = supervisor_second_client.post(url, data=self.POST_LMS_DATA)
+        assert response.status_code == exp_status, (
+            f"Статус ответа <{response.status_code}> не совпадает "
+            f"с ожидаемым <{exp_status}>.",
+        )
+        assert LMS.objects.count() == 0, (
+            "При выполнении POST запроса создается ИПР у сотрудника "
+            "не подчиняющегося руководителю."
+        )
+
+    def test_08_supervisor_can_not_patch_lms_not_your_subordinate(
+        self,
+        lms_first,
+        supervisor_second_client,
+        employee_first,
+    ):
+        """Руководитель не может редактировать ИПР чужого подчиненного."""
+        url = reverse(
+            "api_v1:lms-detail", args=[employee_first.id, lms_first.id]
+        )
+        exp_status = HTTPStatus.FORBIDDEN
+        response = supervisor_second_client.patch(
+            url, data=self.PATCH_LMS_DATA
+        )
+        assert response.status_code == exp_status, (
+            f"Статус ответа <{response.status_code}> не совпадает "
+            f"с ожидаемым <{exp_status}>.",
+        )
+
+    def test_09_supervisor_can_delete_lms_your_subordinate(
+        self,
+        lms_first,
+        supervisor_second_client,
+        employee_first,
+    ):
+        """Руководитель не может удалить ИПР чужого подчиненного."""
+        url = reverse(
+            "api_v1:lms-detail", args=[employee_first.id, lms_first.id]
+        )
+        exp_status = HTTPStatus.FORBIDDEN
+        response = supervisor_second_client.delete(
+            url,
+            data=self.PATCH_LMS_DATA,
+        )
+        assert response.status_code == exp_status, (
+            f"Статус ответа <{response.status_code}> не совпадает "
+            f"с ожидаемым <{exp_status}>.",
+        )
+        assert LMS.objects.count() == 1, (
+            "При выполнении DELETE запроса ИПР был удален у сотрудника. "
+            "не подчиняющегося руководителю."
+        )
+
+    def test_supervisor_can_not_create_second_active_lms(
+        self,
+        supervisor_first_client,
+        employee_first,
+        lms_first,
+    ):
+        url = reverse("api_v1:lms-list", args=[employee_first.id])
+        exp_status = HTTPStatus.BAD_REQUEST
+        response = supervisor_first_client.post(url, data=self.POST_LMS_DATA)
+        assert response.status_code == exp_status, (
+            f"Статус ответа <{response.status_code}> не совпадает "
+            f"с ожидаемым <{exp_status}>.",
+        )
+        assert (
+            LMS.objects.count() == 1
+        ), "При выполнении POST запроса был создан второй активный ИПР."

@@ -118,3 +118,17 @@ lms_test_01_parametrize = (
         ),
     ),
 )
+
+lms_test_06_parametrize = (
+    "supervisor_client, employee_id",
+    (
+        (
+            lf("supervisor_first_client"),
+            lf("employee_second.id"),
+        ),
+        (
+            lf("supervisor_second_client"),
+            lf("employee_first.id"),
+        ),
+    ),
+)
